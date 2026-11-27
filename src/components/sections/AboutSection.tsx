@@ -103,6 +103,7 @@ const PARAGRAPHS_EN: { greeting: string; p1: TextSegment[]; p2: TextSegment[] } 
 function renderSegmentsUpTo(
   segments: TextSegment[],
   charBudget: number,
+  isTech: boolean,
   onSelectTrack?: (track: FilterTrackSlug) => void
 ) {
   let remaining = charBudget;
@@ -111,8 +112,9 @@ function renderSegmentsUpTo(
     const slice = seg.text.slice(0, remaining);
     remaining -= slice.length;
 
-    const underlineClass =
-      "text-foreground underline decoration-neutral-400/70 dark:decoration-neutral-500 underline-offset-4 transition-colors hover:decoration-neutral-900 dark:hover:decoration-white";
+    const underlineClass = isTech
+      ? "text-[#FFFFFF] underline decoration-[#FFFFFF] underline-offset-4 transition-colors"
+      : "text-foreground underline decoration-neutral-400/70 dark:decoration-neutral-500 underline-offset-4 transition-colors hover:decoration-neutral-900 dark:hover:decoration-white";
 
     if (seg.underline && seg.action && onSelectTrack) {
       return (
@@ -123,7 +125,11 @@ function renderSegmentsUpTo(
             e.stopPropagation();
             onSelectTrack(seg.action!);
           }}
-          className={underlineClass}
+          className={
+            isTech
+              ? `${underlineClass} hover:bg-[#FFFFFF] hover:text-[#04472B]`
+              : underlineClass
+          }
         >
           {slice}
         </button>
@@ -144,7 +150,8 @@ function renderSegmentsUpTo(
 
 export function AboutSection({ onSelectTrack }: AboutSectionProps) {
   const { lang } = useLanguage();
-  const { mounted } = useTheme();
+  const { mounted, resolvedTheme } = useTheme();
+  const isTech = mounted && resolvedTheme === "tech";
   const content = lang === "id" ? PARAGRAPHS_ID : PARAGRAPHS_EN;
 
   const fullStream = useMemo(() => {
@@ -276,19 +283,31 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
       }`}
     >
       {/* Top Greeting Line */}
-      <p className="mb-6 text-[15px] font-normal text-neutral-500 dark:text-neutral-400">
+      <p
+        className={`mb-6 text-[15px] font-normal ${
+          isTech
+            ? "text-[#D9EFE4]"
+            : "text-neutral-500 dark:text-neutral-400"
+        }`}
+      >
         {content.greeting.slice(0, greetingBudget)}
       </p>
 
-      <div className="space-y-6 text-[16px] leading-[1.72] font-normal tracking-[-0.01em] text-neutral-800 md:text-[17px] dark:text-neutral-200">
+      <div
+        className={`space-y-6 text-[16px] leading-[1.72] font-normal tracking-[-0.01em] md:text-[17px] ${
+          isTech
+            ? "text-[#FFFFFF]"
+            : "text-neutral-800 dark:text-neutral-200"
+        }`}
+      >
         {/* Paragraph 1 */}
         {p1Budget > 0 && (
-          <p>{renderSegmentsUpTo(content.p1, p1Budget, onSelectTrack)}</p>
+          <p>{renderSegmentsUpTo(content.p1, p1Budget, isTech, onSelectTrack)}</p>
         )}
 
         {/* Paragraph 2 */}
         {p2Budget > 0 && (
-          <p>{renderSegmentsUpTo(content.p2, p2Budget, onSelectTrack)}</p>
+          <p>{renderSegmentsUpTo(content.p2, p2Budget, isTech, onSelectTrack)}</p>
         )}
 
         {/* Minimalist Certifications & Closing Block (Fade-in after typing completes) */}
@@ -301,11 +320,21 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
           >
             {/* Minimalist 2-Row Certifications Section */}
             <div>
-              <h2 className="font-mono text-xs tracking-wider text-neutral-500 uppercase">
+              <h2
+                className={`font-mono text-xs tracking-wider uppercase ${
+                  isTech ? "text-[#FFFFFF]" : "text-neutral-500"
+                }`}
+              >
                 {lang === "id" ? "Sertifikasi" : "Certifications"}
               </h2>
 
-              <div className="mt-2 border-t border-black/10 dark:border-white/10">
+              <div
+                className={`mt-2 border-t ${
+                  isTech
+                    ? "border-[#FFFFFF]"
+                    : "border-black/10 dark:border-white/10"
+                }`}
+              >
                 {CERTIFICATES.map((cert) => (
                   <button
                     key={cert.id}
@@ -316,20 +345,42 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
                       setActiveCertificate(cert);
                     }}
                     onMouseEnter={playTick}
-                    className="group flex w-full items-center justify-between gap-3 border-b border-black/10 py-3 text-left transition-colors dark:border-white/10"
+                    className={`group flex w-full items-center justify-between gap-3 border-b py-3 text-left transition-colors ${
+                      isTech
+                        ? "border-[#FFFFFF]"
+                        : "border-black/10 dark:border-white/10"
+                    }`}
                   >
                     <div className="min-w-0">
                       <p className="text-[15px] leading-snug font-normal text-foreground decoration-dotted underline-offset-4 group-hover:underline">
                         {cert.title}
                       </p>
-                      <p className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
+                      <p
+                        className={`mt-0.5 text-xs ${
+                          isTech
+                            ? "text-[#D9EFE4]"
+                            : "text-neutral-500 dark:text-neutral-400"
+                        }`}
+                      >
                         {cert.issuer}
                       </p>
                     </div>
 
-                    <div className="flex shrink-0 items-center gap-2 font-mono text-xs text-neutral-500 tabular-nums dark:text-neutral-400">
+                    <div
+                      className={`flex shrink-0 items-center gap-2 font-mono text-xs tabular-nums ${
+                        isTech
+                          ? "text-[#FFFFFF]"
+                          : "text-neutral-500 dark:text-neutral-400"
+                      }`}
+                    >
                       <span>{t(cert.shortDate, lang)}</span>
-                      <span className="inline-flex items-center gap-0.5 text-foreground/80 transition-colors group-hover:text-foreground">
+                      <span
+                        className={`inline-flex items-center gap-0.5 transition-colors ${
+                          isTech
+                            ? "border border-[#FFFFFF] bg-[#04472B] px-2 py-0.5 text-[#FFFFFF] group-hover:bg-[#FFFFFF] group-hover:text-[#04472B]"
+                            : "text-foreground/80 group-hover:text-foreground"
+                        }`}
+                      >
                         <span>{lang === "id" ? "Lihat" : "View"}</span>
                         <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                       </span>
@@ -352,7 +403,11 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
                   onMouseEnter={playTick}
-                  className="inline-flex items-center gap-1.5 text-neutral-500 transition-colors hover:text-neutral-900 dark:hover:text-white"
+                  className={`inline-flex items-center gap-1.5 transition-colors ${
+                    isTech
+                      ? "border border-[#FFFFFF] bg-[#04472B] px-2.5 py-1 text-xs text-[#FFFFFF] hover:bg-[#FFFFFF] hover:text-[#04472B]"
+                      : "text-neutral-500 hover:text-neutral-900 dark:hover:text-white"
+                  }`}
                 >
                   <LinkedInMiniIcon />
                   <span>LinkedIn</span>
@@ -364,7 +419,11 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
                   onMouseEnter={playTick}
-                  className="inline-flex items-center gap-1.5 text-neutral-500 transition-colors hover:text-neutral-900 dark:hover:text-white"
+                  className={`inline-flex items-center gap-1.5 transition-colors ${
+                    isTech
+                      ? "border border-[#FFFFFF] bg-[#04472B] px-2.5 py-1 text-xs text-[#FFFFFF] hover:bg-[#FFFFFF] hover:text-[#04472B]"
+                      : "text-neutral-500 hover:text-neutral-900 dark:hover:text-white"
+                  }`}
                 >
                   <GitHubMiniIcon />
                   <span>GitHub</span>
@@ -374,7 +433,11 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
                   href={`mailto:${PROFILE.email}`}
                   onClick={(e) => e.stopPropagation()}
                   onMouseEnter={playTick}
-                  className="inline-flex items-center gap-1.5 text-neutral-500 transition-colors hover:text-neutral-900 dark:hover:text-white"
+                  className={`inline-flex items-center gap-1.5 transition-colors ${
+                    isTech
+                      ? "border border-[#FFFFFF] bg-[#04472B] px-2.5 py-1 text-xs text-[#FFFFFF] hover:bg-[#FFFFFF] hover:text-[#04472B]"
+                      : "text-neutral-500 hover:text-neutral-900 dark:hover:text-white"
+                  }`}
                 >
                   <Mail className="h-3.5 w-3.5" />
                   <span>Email</span>
@@ -405,7 +468,11 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.2 }}
                   onClick={() => setActiveCertificate(null)}
-                  className="fixed inset-0 bg-black/75 backdrop-blur-md dark:bg-black/80"
+                  className={
+                    isTech
+                      ? "fixed inset-0 bg-[#022416]/85 backdrop-blur-xs"
+                      : "fixed inset-0 bg-black/75 backdrop-blur-md dark:bg-black/80"
+                  }
                 />
 
                 {/* 3-Part Modal Container */}
@@ -414,10 +481,20 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.96, y: 8 }}
                   transition={{ type: "spring", bounce: 0, duration: 0.34 }}
-                  className="relative z-10 flex max-h-[90dvh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-black/10 bg-surface text-foreground shadow-2xl sm:max-h-[88dvh] sm:rounded-[22px] dark:border-white/10"
+                  className={`relative z-10 flex max-h-[90dvh] w-full max-w-2xl flex-col overflow-hidden sm:max-h-[88dvh] ${
+                    isTech
+                      ? "rounded-none border border-[#FFFFFF] bg-[#04472B] text-[#FFFFFF] shadow-[4px_4px_0px_#FFFFFF]"
+                      : "rounded-2xl border border-black/10 bg-surface text-foreground shadow-2xl sm:rounded-[22px] dark:border-white/10"
+                  }`}
                 >
                   {/* 1. Header (shrink-0) */}
-                  <div className="flex shrink-0 items-center justify-between gap-3 border-b border-black/10 bg-surface px-4 py-3 sm:px-6 sm:py-4 dark:border-white/10">
+                  <div
+                    className={`flex shrink-0 items-center justify-between gap-3 border-b px-4 py-3 sm:px-6 sm:py-4 ${
+                      isTech
+                        ? "border-[#FFFFFF] bg-[#04472B]"
+                        : "border-black/10 bg-surface dark:border-white/10"
+                    }`}
+                  >
                     <h3 className="truncate text-sm font-medium text-foreground sm:text-base">
                       {activeCertificate.title}
                     </h3>
@@ -431,24 +508,44 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
                       onMouseEnter={playTick}
                       aria-label={closeLabel}
                       title={closeLabel}
-                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-black/10 bg-canvas text-muted transition-all duration-150 hover:border-black/30 hover:text-foreground active:scale-95 dark:border-white/15 dark:hover:border-white/35"
+                      className={`flex h-8 w-8 shrink-0 items-center justify-center transition-all duration-150 active:scale-95 ${
+                        isTech
+                          ? "rounded-none border border-[#FFFFFF] bg-[#04472B] text-[#FFFFFF] hover:bg-[#FFFFFF] hover:text-[#04472B]"
+                          : "rounded-full border border-black/10 bg-canvas text-muted hover:border-black/30 hover:text-foreground dark:border-white/15 dark:hover:border-white/35"
+                      }`}
                     >
                       <X className="h-4 w-4" />
                     </button>
                   </div>
 
                   {/* 2. Body (flex-1 overflow-y-auto overscroll-contain) */}
-                  <div className="minimal-scroll flex flex-1 items-center justify-center overflow-y-auto overscroll-contain bg-neutral-100/70 p-3 sm:p-5 dark:bg-neutral-900/70">
+                  <div
+                    className={`minimal-scroll flex flex-1 items-center justify-center overflow-y-auto overscroll-contain p-3 sm:p-5 ${
+                      isTech
+                        ? "bg-[#04472B]"
+                        : "bg-neutral-100/70 dark:bg-neutral-900/70"
+                    }`}
+                  >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={activeCertificate.image}
                       alt={activeCertificate.title}
-                      className="mx-auto max-h-[65dvh] w-auto max-w-full rounded-lg object-contain shadow-md"
+                      className={`mx-auto max-h-[65dvh] w-auto max-w-full object-contain ${
+                        isTech
+                          ? "rounded-none border border-[#FFFFFF]"
+                          : "rounded-lg shadow-md"
+                      }`}
                     />
                   </div>
 
                   {/* 3. Footer (shrink-0) */}
-                  <div className="flex shrink-0 flex-col justify-between gap-3 border-t border-black/10 bg-surface px-4 py-3.5 text-xs sm:flex-row sm:items-center sm:px-6 sm:py-4 dark:border-white/10">
+                  <div
+                    className={`flex shrink-0 flex-col justify-between gap-3 border-t px-4 py-3.5 text-xs sm:flex-row sm:items-center sm:px-6 sm:py-4 ${
+                      isTech
+                        ? "border-[#FFFFFF] bg-[#04472B]"
+                        : "border-black/10 bg-surface dark:border-white/10"
+                    }`}
+                  >
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-muted">
                       <span className="font-medium text-foreground">
                         {activeCertificate.issuer}
@@ -467,7 +564,11 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
                         target="_blank"
                         rel="noopener noreferrer"
                         onMouseEnter={playTick}
-                        className="inline-flex h-10 w-full items-center justify-center gap-1 rounded-full border border-black/15 bg-canvas px-4 font-mono text-xs text-foreground transition-colors hover:border-black/35 sm:h-8 sm:w-auto dark:border-white/15 dark:hover:border-white/35"
+                        className={`inline-flex h-10 w-full items-center justify-center gap-1 px-4 font-mono text-xs transition-colors sm:h-8 sm:w-auto ${
+                          isTech
+                            ? "rounded-none border border-[#FFFFFF] bg-[#FFFFFF] font-semibold text-[#04472B] hover:bg-[#04472B] hover:text-[#FFFFFF]"
+                            : "rounded-full border border-black/15 bg-canvas text-foreground hover:border-black/35 dark:border-white/15 dark:hover:border-white/35"
+                        }`}
                       >
                         <span>
                           {lang === "id"

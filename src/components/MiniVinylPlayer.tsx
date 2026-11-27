@@ -418,12 +418,14 @@ export function MiniVinylPlayer() {
           }
           className={`flex items-center transition-colors ${
             isTech
-              ? "rounded-none border border-[#4ADE80]/55 bg-[#0B0D0C]/95 shadow-[4px_4px_0px_rgba(74,222,128,0.25)]"
+              ? "rounded-none border border-[#FFFFFF] bg-[#04472B] text-[#FFFFFF] shadow-[4px_4px_0px_#FFFFFF]"
               : "rounded-full border border-black/10 bg-white/85 shadow-lg ring-1 ring-inset ring-white/60 backdrop-blur-xl dark:border-white/15 dark:bg-[#2C2C2E]/92 dark:ring-white/[0.08]"
           } ${
             isExpanded
               ? "max-w-[calc(100vw-2rem)] gap-2.5 p-1.5 pr-2.5 sm:max-w-[275px]"
-              : "cursor-pointer gap-2 p-1.5 pr-3 hover:border-black/25 dark:hover:border-white/25"
+              : isTech
+                ? "cursor-pointer gap-2 p-1.5 pr-3"
+                : "cursor-pointer gap-2 p-1.5 pr-3 hover:border-black/25 dark:hover:border-white/25"
           }`}
         >
           {/* Vinyl Record Disc (Strictly circular .vinyl-disc even in Tech mode) */}
@@ -437,7 +439,11 @@ export function MiniVinylPlayer() {
                   ? "Buka pemutar musik"
                   : "Open music player"
             }
-            className="vinyl-disc relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full shadow-md ring-1 ring-black/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground dark:ring-white/15"
+            className={`vinyl-disc relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground ${
+              isTech
+                ? "ring-1 ring-[#FFFFFF]"
+                : "ring-1 ring-black/20 dark:ring-white/15"
+            }`}
           >
             {/* Rotating Disc Layer */}
             <div
@@ -493,9 +499,9 @@ export function MiniVinylPlayer() {
                 }}
                 className={`w-[2px] transition-all ${
                   isTech
-                    ? "rounded-none bg-[#4ADE80]"
+                    ? "rounded-none bg-[#FFFFFF]"
                     : "rounded-full bg-neutral-700 dark:bg-neutral-200"
-                } ${isActiveSpin ? "eq-bar-anim-1" : "h-1.5 opacity-60"}`}
+                } ${isActiveSpin ? "eq-bar-anim-1" : "h-1.5 opacity-80"}`}
               />
               <span
                 style={{
@@ -503,9 +509,9 @@ export function MiniVinylPlayer() {
                 }}
                 className={`w-[2px] transition-all ${
                   isTech
-                    ? "rounded-none bg-[#4ADE80]"
+                    ? "rounded-none bg-[#FFFFFF]"
                     : "rounded-full bg-neutral-700 dark:bg-neutral-200"
-                } ${isActiveSpin ? "eq-bar-anim-2" : "h-2.5 opacity-60"}`}
+                } ${isActiveSpin ? "eq-bar-anim-2" : "h-2.5 opacity-80"}`}
               />
               <span
                 style={{
@@ -513,9 +519,9 @@ export function MiniVinylPlayer() {
                 }}
                 className={`w-[2px] transition-all ${
                   isTech
-                    ? "rounded-none bg-[#4ADE80]"
+                    ? "rounded-none bg-[#FFFFFF]"
                     : "rounded-full bg-neutral-700 dark:bg-neutral-200"
-                } ${isActiveSpin ? "eq-bar-anim-3" : "h-1 opacity-60"}`}
+                } ${isActiveSpin ? "eq-bar-anim-3" : "h-1 opacity-80"}`}
               />
             </div>
           )}
@@ -534,15 +540,19 @@ export function MiniVinylPlayer() {
                 {/* Middle: Track Title & Artist / Buffering / Error */}
                 <div className="min-w-0 flex-1 pr-1">
                   <div className="flex items-center gap-1.5">
-                    <p className="truncate text-xs leading-tight font-medium text-foreground">
+                    <p
+                      className={`truncate text-xs leading-tight font-medium ${
+                        isTech ? "text-[#FFFFFF]" : "text-foreground"
+                      }`}
+                    >
                       {currentTrack.title}
                     </p>
                     {hasMultipleTracks && (
                       <span
-                        className={`shrink-0 px-1 py-0.2 font-mono text-[9px] text-muted tabular-nums ${
+                        className={`shrink-0 px-1 py-0.2 font-mono text-[9px] tabular-nums ${
                           isTech
-                            ? "rounded-none border border-[#4ADE80]/30 bg-[#080A09]"
-                            : "rounded bg-black/[0.06] dark:bg-white/[0.1]"
+                            ? "rounded-none border border-[#FFFFFF] bg-[#04472B] text-[#FFFFFF]"
+                            : "rounded bg-black/[0.06] text-muted dark:bg-white/[0.1]"
                         }`}
                       >
                         {trackIndex + 1}/{MUSIC_PLAYLIST.length}
@@ -552,9 +562,11 @@ export function MiniVinylPlayer() {
 
                   <p
                     className={`mt-0.5 truncate text-[10px] leading-tight ${
-                      hasError
-                        ? "text-amber-600 dark:text-amber-400"
-                        : "text-muted"
+                      isTech
+                        ? "text-[#D9EFE4]"
+                        : hasError
+                          ? "text-amber-600 dark:text-amber-400"
+                          : "text-muted"
                     }`}
                   >
                     {subtitleText}
@@ -568,9 +580,9 @@ export function MiniVinylPlayer() {
                     onClick={handleTogglePlay}
                     aria-label={playPauseLabel}
                     title={playPauseLabel}
-                    className={`flex h-7 w-7 items-center justify-center transition-transform duration-150 active:scale-95 ${
+                    className={`flex h-7 w-7 items-center justify-center transition-colors duration-150 active:scale-95 ${
                       isTech
-                        ? "rounded-none border border-[#4ADE80] bg-[#4ADE80] text-[#080A09] hover:opacity-90"
+                        ? "rounded-none border border-[#FFFFFF] bg-[#FFFFFF] text-[#04472B] hover:bg-[#04472B] hover:text-[#FFFFFF]"
                         : "rounded-full bg-foreground text-canvas hover:opacity-90"
                     }`}
                   >
@@ -589,7 +601,7 @@ export function MiniVinylPlayer() {
                       title={nextTrackLabel}
                       className={`flex h-7 w-7 items-center justify-center transition-colors duration-150 active:scale-95 ${
                         isTech
-                          ? "rounded-none border border-[#4ADE80]/40 bg-[#080A09] text-[#E6ECE8] hover:border-[#4ADE80]"
+                          ? "rounded-none border border-[#FFFFFF] bg-[#04472B] text-[#FFFFFF] hover:bg-[#FFFFFF] hover:text-[#04472B]"
                           : "rounded-full border border-black/10 bg-canvas text-foreground hover:border-black/30 dark:border-white/15 dark:hover:border-white/35"
                       }`}
                     >
@@ -602,10 +614,10 @@ export function MiniVinylPlayer() {
                     onClick={handleCollapse}
                     aria-label={closePillLabel}
                     title={closePillLabel}
-                    className={`flex h-6.5 w-6.5 items-center justify-center text-muted transition-colors duration-150 active:scale-95 ${
+                    className={`flex h-6.5 w-6.5 items-center justify-center transition-colors duration-150 active:scale-95 ${
                       isTech
-                        ? "rounded-none hover:bg-[#4ADE80]/15 hover:text-[#4ADE80]"
-                        : "rounded-full hover:bg-black/5 hover:text-foreground dark:hover:bg-white/10"
+                        ? "rounded-none text-[#FFFFFF] hover:bg-[#FFFFFF] hover:text-[#04472B]"
+                        : "rounded-full text-muted hover:bg-black/5 hover:text-foreground dark:hover:bg-white/10"
                     }`}
                   >
                     <X className="h-3.5 w-3.5" />

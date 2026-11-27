@@ -67,7 +67,7 @@ function TerminalPromptGlyph() {
       viewBox="0 0 20 20"
       fill="none"
       aria-hidden="true"
-      className="h-3.5 w-3.5 text-[#4ADE80]"
+      className="h-3.5 w-3.5 text-current"
     >
       <path
         d="M4.5 6.5L8.5 10L4.5 13.5"
@@ -177,7 +177,7 @@ export function TopPillNavbar({
           aria-label="Primary controls"
           className={`flex h-9 items-center gap-1.5 px-2 text-[13px] transition-all ${
             isTech
-              ? "rounded-none border border-[#4ADE80]/55 bg-[#0B0D0C] text-[#E6ECE8] shadow-[3px_3px_0px_rgba(74,222,128,0.25)]"
+              ? "rounded-none border border-[#FFFFFF] bg-[#04472B] text-[#FFFFFF] shadow-[4px_4px_0px_#FFFFFF]"
               : "rounded-full border border-black/[0.12] bg-white/85 text-neutral-700 backdrop-blur-md dark:border-white/[0.14] dark:bg-neutral-950/85 dark:text-neutral-300"
           }`}
         >
@@ -202,8 +202,8 @@ export function TopPillNavbar({
               isTech
                 ? `rounded-none ${
                     isPopoverOpen
-                      ? "bg-[#4ADE80] text-[#080A09]"
-                      : "text-[#4ADE80] hover:bg-[#4ADE80]/15"
+                      ? "bg-[#FFFFFF] text-[#04472B]"
+                      : "text-[#FFFFFF] hover:bg-[#FFFFFF] hover:text-[#04472B]"
                   }`
                 : `rounded-full text-neutral-700 hover:text-black focus-visible:ring-1 focus-visible:ring-black dark:text-neutral-300 dark:hover:text-white dark:focus-visible:ring-white ${
                     isPopoverOpen
@@ -228,7 +228,7 @@ export function TopPillNavbar({
           <span
             aria-hidden="true"
             className={`h-3.5 w-[1px] ${
-              isTech ? "bg-[#4ADE80]/35" : "bg-black/10 dark:bg-white/15"
+              isTech ? "bg-[#FFFFFF]" : "bg-black/10 dark:bg-white/15"
             }`}
           />
 
@@ -249,7 +249,7 @@ export function TopPillNavbar({
             }
             className={`relative flex h-6.5 min-w-[28px] items-center justify-center overflow-hidden px-1.5 font-mono text-[11px] font-medium tracking-wider uppercase transition-colors duration-150 active:scale-95 ${
               isTech
-                ? "rounded-none text-[#E6ECE8] hover:bg-[#4ADE80]/15 hover:text-[#4ADE80]"
+                ? "rounded-none text-[#FFFFFF] hover:bg-[#FFFFFF] hover:text-[#04472B]"
                 : "rounded-full text-neutral-700 hover:text-black focus-visible:ring-1 focus-visible:ring-black dark:text-neutral-300 dark:hover:text-white dark:focus-visible:ring-white"
             }`}
           >
@@ -270,7 +270,7 @@ export function TopPillNavbar({
           <span
             aria-hidden="true"
             className={`h-3.5 w-[1px] ${
-              isTech ? "bg-[#4ADE80]/35" : "bg-black/10 dark:bg-white/15"
+              isTech ? "bg-[#FFFFFF]" : "bg-black/10 dark:bg-white/15"
             }`}
           />
 
@@ -282,7 +282,7 @@ export function TopPillNavbar({
               onMouseEnter={playTick}
               className={`px-2.5 py-0.5 text-[13px] font-normal tracking-[-0.01em] transition-all duration-150 active:scale-95 ${
                 isTech
-                  ? "rounded-none text-[#E6ECE8] hover:bg-[#4ADE80] hover:text-[#080A09]"
+                  ? "rounded-none text-[#FFFFFF] hover:bg-[#FFFFFF] hover:text-[#04472B]"
                   : "rounded-full text-neutral-700 hover:text-black hover:ring-1 hover:ring-black/25 focus-visible:ring-1 focus-visible:ring-black dark:text-neutral-300 dark:hover:text-white dark:hover:ring-white/30 dark:focus-visible:ring-white"
               }`}
             >
@@ -299,7 +299,7 @@ export function TopPillNavbar({
               onMouseEnter={playTick}
               className={`px-2.5 py-0.5 text-[13px] font-normal tracking-[-0.01em] transition-all duration-150 active:scale-95 ${
                 isTech
-                  ? "rounded-none text-[#E6ECE8] hover:bg-[#4ADE80] hover:text-[#080A09]"
+                  ? "rounded-none text-[#FFFFFF] hover:bg-[#FFFFFF] hover:text-[#04472B]"
                   : "rounded-full text-neutral-700 hover:text-black hover:ring-1 hover:ring-black/25 focus-visible:ring-1 focus-visible:ring-black dark:text-neutral-300 dark:hover:text-white dark:hover:ring-white/30 dark:focus-visible:ring-white"
               }`}
             >
@@ -316,7 +316,7 @@ export function TopPillNavbar({
               onMouseEnter={playTick}
               className={`px-2.5 py-0.5 text-[13px] font-normal tracking-[-0.01em] transition-all duration-150 active:scale-95 ${
                 isTech
-                  ? "rounded-none text-[#E6ECE8] hover:bg-[#4ADE80] hover:text-[#080A09]"
+                  ? "rounded-none text-[#FFFFFF] hover:bg-[#FFFFFF] hover:text-[#04472B]"
                   : "rounded-full text-neutral-700 hover:text-black hover:ring-1 hover:ring-black/25 focus-visible:ring-1 focus-visible:ring-black dark:text-neutral-300 dark:hover:text-white dark:hover:ring-white/30 dark:focus-visible:ring-white"
               }`}
             >
@@ -339,7 +339,7 @@ export function TopPillNavbar({
               transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
               className={`absolute top-full left-1/2 z-50 mt-2.5 w-[290px] max-w-[calc(100vw-2rem)] -translate-x-1/2 p-3.5 ${
                 isTech
-                  ? "rounded-none border border-[#4ADE80]/55 bg-[#0B0D0C] text-[#E6ECE8] shadow-[4px_4px_0px_rgba(74,222,128,0.28)]"
+                  ? "rounded-none border border-[#FFFFFF] bg-[#04472B] text-[#FFFFFF] shadow-[4px_4px_0px_#FFFFFF]"
                   : "rounded-[20px] border border-black/10 bg-white/92 text-neutral-800 shadow-[0_14px_40px_rgba(0,0,0,0.12)] ring-1 ring-inset ring-white/60 backdrop-blur-xl dark:border-white/15 dark:bg-[#1C1C1E]/95 dark:text-neutral-200 dark:shadow-[0_18px_46px_rgba(0,0,0,0.65)] dark:ring-white/[0.06]"
               }`}
             >
@@ -348,7 +348,7 @@ export function TopPillNavbar({
                 <p
                   className={`text-[11px] font-medium tracking-wider uppercase ${
                     isTech
-                      ? "font-mono text-[#87968D]"
+                      ? "font-mono text-[#FFFFFF]"
                       : "text-neutral-500 dark:text-neutral-400"
                   }`}
                 >
@@ -358,10 +358,10 @@ export function TopPillNavbar({
                 <div
                   role="radiogroup"
                   aria-label={lang === "id" ? "Pilih tema" : "Select theme"}
-                  className={`mt-2 grid grid-cols-4 gap-1 p-1 ${
+                  className={`mt-2 grid grid-cols-4 ${
                     isTech
-                      ? "rounded-none border border-[#4ADE80]/30 bg-[#080A09]"
-                      : "rounded-xl bg-black/[0.05] dark:bg-white/[0.07]"
+                      ? "divide-x divide-[#FFFFFF] rounded-none border border-[#FFFFFF] bg-[#04472B] p-0"
+                      : "gap-1 rounded-xl bg-black/[0.05] p-1 dark:bg-white/[0.07]"
                   }`}
                 >
                   {THEME_OPTIONS.map((opt) => {
@@ -377,8 +377,8 @@ export function TopPillNavbar({
                         className={`py-1.5 text-center text-xs font-medium transition-all duration-150 ${
                           isTech
                             ? isSelected
-                              ? "rounded-none border border-[#4ADE80] bg-[#4ADE80]/15 text-[#4ADE80]"
-                              : "rounded-none border border-transparent text-[#87968D] hover:text-[#E6ECE8]"
+                              ? "rounded-none border-b-4 border-[#FFFFFF] bg-[#FFFFFF] font-semibold text-[#04472B]"
+                              : "rounded-none bg-[#04472B] text-[#FFFFFF] hover:bg-[#FFFFFF] hover:text-[#04472B]"
                             : isSelected
                               ? "rounded-lg bg-white text-black shadow-xs dark:bg-neutral-800 dark:text-white"
                               : "rounded-lg text-neutral-600 hover:text-black dark:text-neutral-400 dark:hover:text-white"
@@ -396,7 +396,7 @@ export function TopPillNavbar({
                 aria-hidden="true"
                 className={`my-3 h-px w-full ${
                   isTech
-                    ? "bg-[#4ADE80]/25"
+                    ? "bg-[#FFFFFF]"
                     : "bg-black/[0.08] dark:bg-white/[0.1]"
                 }`}
               />
@@ -406,7 +406,7 @@ export function TopPillNavbar({
                 <span
                   className={`text-[13px] ${
                     isTech
-                      ? "font-mono text-[#E6ECE8]"
+                      ? "font-mono text-[#FFFFFF]"
                       : "font-normal text-neutral-800 dark:text-neutral-200"
                   }`}
                 >
@@ -425,11 +425,7 @@ export function TopPillNavbar({
                   onClick={handleToggleSoundEffects}
                   className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center transition-colors duration-150 ${
                     isTech
-                      ? `rounded-none border ${
-                          soundEnabled
-                            ? "border-[#4ADE80] bg-[#4ADE80]/20"
-                            : "border-white/25 bg-[#080A09]"
-                        }`
+                      ? "rounded-none border border-[#FFFFFF] bg-[#04472B]"
                       : `rounded-full p-0.5 ${
                           soundEnabled
                             ? "bg-neutral-900 dark:bg-white"
@@ -440,10 +436,10 @@ export function TopPillNavbar({
                   <span
                     className={`pointer-events-none block h-4.5 w-4.5 transition-transform duration-150 ${
                       isTech
-                        ? `rounded-none ${
+                        ? `rounded-none bg-[#FFFFFF] ${
                             soundEnabled
-                              ? "translate-x-5.5 bg-[#4ADE80]"
-                              : "translate-x-0.5 bg-[#87968D]"
+                              ? "translate-x-5.5"
+                              : "translate-x-0.5 opacity-60"
                           }`
                         : `rounded-full shadow-xs ${
                             soundEnabled

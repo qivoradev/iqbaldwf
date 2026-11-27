@@ -25,16 +25,16 @@
 }
 
 /* ============================================================================
- * Mode 4: Tech (Terminal / Raw Grid Aesthetic)
+ * Mode 4: Tech (2-Color Solid High-Contrast Deep Emerald #04472B & White #FFFFFF)
  * ========================================================================== */
 
 html[data-theme="tech"] {
-  --bg: #080A09;
-  --surface: #0B0D0C;
-  --fg: #E6ECE8;
-  --muted: #87968D;
-  --border: rgba(74, 222, 128, 0.32);
-  --accent-brand: #4ADE80;
+  --bg: #04472B;
+  --surface: #04472B;
+  --fg: #FFFFFF;
+  --muted: #D9EFE4;
+  --border: #FFFFFF;
+  --accent-brand: #FFFFFF;
 }
 
 @theme inline {
@@ -71,12 +71,9 @@ body {
 
 html[data-theme="tech"],
 html[data-theme="tech"] body {
-  background-color: #080A09;
-  background-image:
-    linear-gradient(to right, rgba(74, 222, 128, 0.055) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(74, 222, 128, 0.055) 1px, transparent 1px);
-  background-size: 28px 28px;
-  color: #E6ECE8;
+  background-color: #04472B !important;
+  background-image: none !important;
+  color: #FFFFFF !important;
   font-family: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace !important;
 }
 
@@ -86,27 +83,14 @@ html[data-theme="tech"] body {
 }
 
 html[data-theme="tech"] ::selection {
-  background-color: #4ADE80;
-  color: #080A09;
+  background-color: #FFFFFF;
+  color: #04472B;
 }
 
-/* Force sharp corners on UI cards, modals, buttons, badges, and outer containers in Tech mode,
+/* Force sharp corners (0px) on all UI elements in Tech mode,
    while strictly preserving circular geometry on the spinning .vinyl-disc and its inner elements */
-html[data-theme="tech"] [aria-modal="true"] > div,
-html[data-theme="tech"] [aria-modal="true"] button,
-html[data-theme="tech"] [aria-modal="true"] a,
-html[data-theme="tech"] [aria-modal="true"] span,
-html[data-theme="tech"] [aria-modal="true"] div.rounded-xl,
-html[data-theme="tech"] [aria-modal="true"] div.rounded-2xl,
-html[data-theme="tech"] [aria-modal="true"] img,
-html[data-theme="tech"] [data-tech-sharp] {
+html[data-theme="tech"] *:not(.vinyl-disc):not(.vinyl-disc *) {
   border-radius: 0px !important;
-}
-
-html[data-theme="tech"] [aria-modal="true"] > div.relative {
-  border-color: rgba(74, 222, 128, 0.5) !important;
-  background-color: #0B0D0C !important;
-  box-shadow: 5px 5px 0px rgba(74, 222, 128, 0.25) !important;
 }
 
 html[data-theme="tech"] .vinyl-disc,
@@ -114,9 +98,8 @@ html[data-theme="tech"] .vinyl-disc * {
   border-radius: 9999px !important;
 }
 
-html[data-theme="tech"] .custom-dot-cursor > div {
-  border-radius: 0px !important;
-  background-color: #4ADE80 !important;
+html[data-theme="tech"] .custom-dot-cursor {
+  display: none !important;
 }
 
 /* Custom thin scrollbar for modals & internal scroll containers */
@@ -144,11 +127,11 @@ html[data-theme="tech"] .custom-dot-cursor > div {
 }
 
 html[data-theme="tech"] .minimal-scroll {
-  scrollbar-color: rgba(74, 222, 128, 0.4) transparent;
+  scrollbar-color: #FFFFFF #04472B;
 }
 
 html[data-theme="tech"] .minimal-scroll::-webkit-scrollbar-thumb {
-  background-color: rgba(74, 222, 128, 0.4);
+  background-color: #FFFFFF;
   border-radius: 0px;
 }
 

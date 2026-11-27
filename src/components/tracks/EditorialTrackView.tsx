@@ -11,7 +11,7 @@ import {
   getTrackBySlug,
   t,
 } from "@/data/portfolio";
-import { useLanguage } from "@/components/providers/AppProviders";
+import { useLanguage, useTheme } from "@/components/providers/AppProviders";
 import { useUiSound } from "@/hooks/useUiSound";
 import { ProjectModal } from "@/components/sections/ProjectModal";
 
@@ -23,7 +23,10 @@ interface EditorialTrackViewProps {
 export function EditorialTrackView({}: EditorialTrackViewProps) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const { lang } = useLanguage();
+  const { resolvedTheme, mounted } = useTheme();
   const { playTick } = useUiSound();
+
+  const isTech = mounted && resolvedTheme === "tech";
 
   const dataTrack = getTrackBySlug("data-analyst");
   const projects = getProjectsByTrack("data-analyst");
@@ -51,14 +54,26 @@ export function EditorialTrackView({}: EditorialTrackViewProps) {
         </p>
 
         {dataTrack && (
-          <p className="mt-3.5 font-mono text-xs text-neutral-500 dark:text-neutral-400">
+          <p
+            className={`mt-3.5 font-mono text-xs ${
+              isTech
+                ? "text-[#D9EFE4]"
+                : "text-neutral-500 dark:text-neutral-400"
+            }`}
+          >
             {dataTrack.coreStack.join(" / ")}
           </p>
         )}
       </header>
 
-      {/* Clean Minimalist Editorial Project List (No thumbnail clutter in main list) */}
-      <div className="divide-y divide-black/[0.08] border-y border-black/[0.08] dark:divide-white/[0.1] dark:border-white/[0.1]">
+      {/* Clean Minimalist Editorial Project List (Sharp high-contrast cards in Tech mode) */}
+      <div
+        className={
+          isTech
+            ? "space-y-4"
+            : "divide-y divide-black/[0.08] border-y border-black/[0.08] dark:divide-white/[0.1] dark:border-white/[0.1]"
+        }
+      >
         <AnimatePresence mode="popLayout">
           {projects.map((project, index) => (
             <motion.article
@@ -85,7 +100,11 @@ export function EditorialTrackView({}: EditorialTrackViewProps) {
                   setSelectedProject(project);
                 }
               }}
-              className="group cursor-pointer py-5 transition-colors"
+              className={
+                isTech
+                  ? "group cursor-pointer rounded-none border border-[#FFFFFF] bg-[#04472B] p-4 shadow-[4px_4px_0px_#FFFFFF] transition-colors sm:p-5"
+                  : "group cursor-pointer py-5 transition-colors"
+              }
             >
               <div className="flex flex-col justify-between gap-1 sm:flex-row sm:items-baseline">
                 <h2 className="text-[16px] leading-snug font-normal tracking-[-0.015em] text-foreground decoration-dotted underline-offset-4 group-hover:underline">
@@ -104,12 +123,24 @@ export function EditorialTrackView({}: EditorialTrackViewProps) {
               </p>
 
               <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
-                <span className="font-mono text-xs text-neutral-500 dark:text-neutral-400">
+                <span
+                  className={`font-mono text-xs ${
+                    isTech
+                      ? "text-[#D9EFE4]"
+                      : "text-neutral-500 dark:text-neutral-400"
+                  }`}
+                >
                   {project.techStack.join(" / ")}
                 </span>
 
                 <div className="flex items-center gap-3">
-                  <span className="inline-flex items-center gap-1 font-mono text-xs text-muted transition-colors group-hover:text-foreground">
+                  <span
+                    className={`inline-flex items-center gap-1 font-mono text-xs transition-colors ${
+                      isTech
+                        ? "border border-[#FFFFFF] bg-[#04472B] px-2.5 py-1 text-[#FFFFFF] group-hover:bg-[#FFFFFF] group-hover:text-[#04472B]"
+                        : "text-muted group-hover:text-foreground"
+                    }`}
+                  >
                     <span>
                       {lang === "id" ? "Studi kasus" : "Case study"}
                     </span>
@@ -130,13 +161,25 @@ export function EditorialTrackView({}: EditorialTrackViewProps) {
               ? "Catatan Perkembangan / Living Log"
               : "Living Log / Recent Updates"}
           </p>
-          <div className="mt-3 divide-y divide-black/[0.06] border-t border-black/[0.08] dark:divide-white/[0.08] dark:border-white/[0.1]">
+          <div
+            className={
+              isTech
+                ? "mt-3 divide-y divide-[#FFFFFF] border-t border-b border-[#FFFFFF]"
+                : "mt-3 divide-y divide-black/[0.06] border-t border-black/[0.08] dark:divide-white/[0.08] dark:border-white/[0.1]"
+            }
+          >
             {logs.map((log) => (
               <div
                 key={log.id}
                 className="flex flex-col gap-1 py-3 sm:flex-row sm:items-baseline sm:justify-between"
               >
-                <p className="text-xs leading-relaxed text-neutral-700 dark:text-neutral-300">
+                <p
+                  className={`text-xs leading-relaxed ${
+                    isTech
+                      ? "text-[#FFFFFF]"
+                      : "text-neutral-700 dark:text-neutral-300"
+                  }`}
+                >
                   {t(log.title, lang)}
                 </p>
                 <time className="shrink-0 font-mono text-[11px] text-muted tabular-nums">

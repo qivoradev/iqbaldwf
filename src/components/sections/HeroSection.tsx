@@ -17,7 +17,7 @@ function InlineSparkTrendGlyph({ isTech }: { isTech: boolean }) {
     <span
       aria-hidden="true"
       className={`mx-2 sm:mx-2.5 inline-flex items-center justify-center align-middle ${
-        isTech ? "text-[#4ADE80]" : "text-foreground"
+        isTech ? "text-[#FFFFFF]" : "text-foreground"
       }`}
     >
       <svg
@@ -64,7 +64,7 @@ export function HeroSection({ onSelectTrack }: HeroSectionProps) {
       <div
         className={`relative h-24 w-24 overflow-hidden transition-all duration-200 ${
           isTech
-            ? "rounded-none border border-[#4ADE80]/55 bg-[#0E1210] shadow-[4px_4px_0px_rgba(74,222,128,0.22)]"
+            ? "rounded-none border border-[#FFFFFF] bg-[#04472B] shadow-[4px_4px_0px_#FFFFFF]"
             : "rounded-full bg-neutral-200/60 dark:bg-neutral-900"
         }`}
       >
@@ -82,7 +82,7 @@ export function HeroSection({ onSelectTrack }: HeroSectionProps) {
       <p
         className={`mt-3.5 text-[15px] font-normal tracking-[-0.01em] ${
           isTech
-            ? "text-[#87968D]"
+            ? "text-[#FFFFFF]"
             : "text-neutral-700 dark:text-neutral-300"
         }`}
       >
@@ -90,7 +90,11 @@ export function HeroSection({ onSelectTrack }: HeroSectionProps) {
       </p>
 
       {/* Headline: Strictly font-normal (weight 400), mobile-safe clamp(1.75rem,7vw,3.35rem), 2 balanced lines */}
-      <h1 className="mt-6 px-4 text-[clamp(1.75rem,7vw,3.35rem)] leading-[1.12] font-normal tracking-[-0.03em] text-foreground">
+      <h1
+        className={`mt-6 px-4 text-[clamp(1.75rem,7vw,3.35rem)] leading-[1.12] font-normal tracking-[-0.03em] ${
+          isTech ? "text-[#FFFFFF]" : "text-foreground"
+        }`}
+      >
         <span className="block">
           Data analyst
           <InlineSparkTrendGlyph isTech={isTech} />

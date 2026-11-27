@@ -217,7 +217,7 @@ const DOCK_HOVER_SPRING = {
 };
 
 const TECH_TILE_CLASS =
-  "rounded-none border border-white/20 bg-[#0E1210] text-[#E6ECE8] transition-all duration-150 hover:border-[#4ADE80] hover:bg-[#4ADE80] hover:text-[#080A09] hover:shadow-[3px_3px_0px_rgba(255,255,255,0.2)] active:bg-[#4ADE80] active:text-[#080A09]";
+  "rounded-none border border-[#FFFFFF] bg-[#04472B] text-[#FFFFFF] transition-colors duration-150 hover:bg-[#FFFFFF] hover:text-[#04472B] active:bg-[#FFFFFF] active:text-[#04472B]";
 
 export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
@@ -308,7 +308,7 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
   };
 
   const tooltipClass = isTech
-    ? "pointer-events-none absolute bottom-[calc(100%+14px)] left-1/2 z-30 -translate-x-1/2 whitespace-nowrap rounded-none border border-[#4ADE80]/60 bg-[#0B0D0C] px-3 py-1.5 font-mono text-[12px] leading-none font-medium text-[#4ADE80] shadow-[3px_3px_0px_rgba(74,222,128,0.25)]"
+    ? "pointer-events-none absolute bottom-[calc(100%+14px)] left-1/2 z-30 -translate-x-1/2 whitespace-nowrap rounded-none border border-[#FFFFFF] bg-[#04472B] px-3 py-1.5 font-mono text-[12px] leading-none font-medium text-[#FFFFFF] shadow-[3px_3px_0px_#FFFFFF]"
     : "pointer-events-none absolute bottom-[calc(100%+14px)] left-1/2 z-30 -translate-x-1/2 whitespace-nowrap rounded-full bg-[#222222] px-3.5 py-1.5 text-[13px] leading-none font-medium text-white shadow-md dark:bg-[#F5F5F5] dark:text-[#111111]";
 
   return (
@@ -320,7 +320,7 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
         onMouseLeave={() => setHoveredId(null)}
         className={
           isTech
-            ? "hidden sm:flex sm:items-center sm:gap-2 sm:rounded-none sm:border sm:border-[#4ADE80]/55 sm:bg-[#0B0D0C]/95 sm:p-2 sm:shadow-[4px_4px_0px_rgba(74,222,128,0.25)]"
+            ? "hidden sm:flex sm:items-center sm:gap-2 sm:rounded-none sm:border sm:border-[#FFFFFF] sm:bg-[#04472B] sm:p-2 sm:shadow-[4px_4px_0px_#FFFFFF]"
             : "hidden sm:flex sm:items-center sm:gap-2 sm:rounded-[22px] sm:border sm:border-black/[0.08] sm:bg-white/75 sm:p-2 sm:shadow-[0_8px_30px_rgb(0,0,0,0.06)] sm:ring-1 sm:ring-inset sm:ring-white/60 sm:backdrop-blur-xl dark:sm:border dark:sm:border-white/[0.16] dark:sm:bg-[#2C2C2E]/95 dark:sm:shadow-[0_12px_36px_rgba(0,0,0,0.65)] dark:sm:ring-1 dark:sm:ring-inset dark:sm:ring-white/[0.08]"
         }
       >
@@ -385,7 +385,7 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
         <div
           aria-hidden="true"
           className={`mx-1.5 h-8 w-[1px] shrink-0 ${
-            isTech ? "bg-[#4ADE80]/35" : "bg-black/10 dark:bg-white/25"
+            isTech ? "bg-[#FFFFFF]" : "bg-black/10 dark:bg-white/25"
           }`}
         />
 
@@ -447,7 +447,7 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
         aria-label="Mobile portfolio tracks and social links"
         className={
           isTech
-            ? "mx-auto w-fit max-w-[calc(100vw-2rem)] rounded-none border border-[#4ADE80]/55 bg-[#0B0D0C]/95 px-4 py-4 shadow-[4px_4px_0px_rgba(74,222,128,0.25)] sm:hidden"
+            ? "mx-auto w-fit max-w-[calc(100vw-2rem)] rounded-none border border-[#FFFFFF] bg-[#04472B] px-4 py-4 shadow-[4px_4px_0px_#FFFFFF] sm:hidden"
             : "mx-auto w-fit max-w-[calc(100vw-2rem)] rounded-[24px] border border-black/[0.08] bg-white/80 px-4 py-4 shadow-[0_8px_30px_rgb(0,0,0,0.06)] ring-1 ring-inset ring-white/60 backdrop-blur-xl sm:hidden dark:border dark:border-white/[0.16] dark:bg-[#2C2C2E]/95 dark:shadow-[0_12px_36px_rgba(0,0,0,0.65)] dark:ring-1 dark:ring-inset dark:ring-white/[0.08]"
         }
       >
@@ -478,7 +478,7 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
                 <span
                   className={`mt-1.5 text-center text-[11px] leading-tight font-normal ${
                     isTech
-                      ? "text-[#87968D]"
+                      ? "text-[#FFFFFF]"
                       : "text-neutral-600 dark:text-neutral-300"
                   }`}
                 >
@@ -492,7 +492,7 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
         <div
           aria-hidden="true"
           className={`my-3 h-[1px] w-full ${
-            isTech ? "bg-[#4ADE80]/30" : "bg-black/10 dark:bg-white/20"
+            isTech ? "bg-[#FFFFFF]" : "bg-black/10 dark:bg-white/20"
           }`}
         />
 
@@ -518,7 +518,7 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
               <span
                 className={`mt-1.5 text-center text-[11px] leading-tight font-normal ${
                   isTech
-                    ? "text-[#87968D]"
+                    ? "text-[#FFFFFF]"
                     : "text-neutral-600 dark:text-neutral-300"
                 }`}
               >
