@@ -59,11 +59,24 @@ const themeInitScript = `
 (function() {
   try {
     var saved = localStorage.getItem('iqbaldf-theme');
-    var isDark = saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
-    if (isDark) {
-      document.documentElement.classList.add('dark');
+    var root = document.documentElement;
+    if (saved === 'tech') {
+      root.classList.add('dark');
+      root.setAttribute('data-theme', 'tech');
+    } else if (saved === 'dark') {
+      root.removeAttribute('data-theme');
+      root.classList.add('dark');
+    } else if (saved === 'light') {
+      root.removeAttribute('data-theme');
+      root.classList.remove('dark');
     } else {
-      document.documentElement.classList.remove('dark');
+      root.removeAttribute('data-theme');
+      var isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (isDark) {
+        root.classList.add('dark');
+      } else {
+        root.classList.remove('dark');
+      }
     }
   } catch (e) {}
 })();

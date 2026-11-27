@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Pause, Play, SkipForward, X } from "lucide-react";
 import { MUSIC_PLAYLIST } from "@/data/music";
-import { useLanguage } from "@/components/providers/AppProviders";
+import { useLanguage, useTheme } from "@/components/providers/AppProviders";
 import { useUiSound } from "@/hooks/useUiSound";
 
 /* ============================================================================
@@ -133,7 +133,10 @@ const INITIAL_VOLUME = 35;
 
 export function MiniVinylPlayer() {
   const { lang } = useLanguage();
+  const { resolvedTheme, mounted } = useTheme();
   const { playTick } = useUiSound();
+
+  const isTech = mounted && resolvedTheme === "tech";
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [trackIndex, setTrackIndex] = useState(0);
@@ -150,12 +153,10 @@ export function MiniVinylPlayer() {
   const currentTrack = MUSIC_PLAYLIST[trackIndex] ?? MUSIC_PLAYLIST[0];
   const hasMultipleTracks = MUSIC_PLAYLIST.length > 1;
 
-  // Keep trackIndexRef synced for callbacks inside YT events
   useEffect(() => {
     trackIndexRef.current = trackIndex;
   }, [trackIndex]);
 
-  // Initialize hidden YouTube IFrame Player once (Strict Mode & remount safe)
   useEffect(() => {
     let isCancelled = false;
     const host = playerHostRef.current;
@@ -168,7 +169,6 @@ export function MiniVinylPlayer() {
       .then((YT) => {
         if (isCancelled || !playerHostRef.current) return;
 
-        // Create a dedicated inner mount node so React's host ref stays intact across Strict Mode
         const mountEl = document.createElement("div");
         playerHostRef.current.innerHTML = "";
         playerHostRef.current.appendChild(mountEl);
@@ -194,7 +194,6 @@ export function MiniVinylPlayer() {
               isReadyRef.current = true;
               event.target.setVolume(INITIAL_VOLUME);
 
-              // If user tapped Play while the iframe was still initializing
               if (pendingPlayRef.current) {
                 pendingPlayRef.current = false;
                 try {
@@ -219,11 +218,9 @@ export function MiniVinylPlayer() {
                 setPlayerStatus("paused");
               } else if (event.data === ENDED) {
                 if (MUSIC_PLAYLIST.length <= 1) {
-                  // Seamless single-track loop
                   event.target.seekTo(0, true);
                   event.target.playVideo();
                 } else {
-                  // Advance to next track automatically
                   const nextIdx =
                     (trackIndexRef.current + 1) % MUSIC_PLAYLIST.length;
                   const nextTrack = MUSIC_PLAYLIST[nextIdx];
@@ -292,7 +289,6 @@ export function MiniVinylPlayer() {
         return;
       }
 
-      // Trigger playVideo() directly inside user click gesture for mobile Safari/Chrome compatibility
       setHasError(false);
       setPlayerStatus("buffering");
 
@@ -305,7 +301,6 @@ export function MiniVinylPlayer() {
           setPlayerStatus("idle");
         }
       } else {
-        // Player still warming up; will start immediately onReady
         pendingPlayRef.current = true;
       }
     },
@@ -381,7 +376,7 @@ export function MiniVinylPlayer() {
 
   return (
     <>
-      {/* Hidden Off-Screen YouTube Audio Backend (Never uses display:none so mobile audio playback stays allowed) */}
+      {/* Hidden Off-Screen YouTube Audio Backend */}
       <div
         aria-hidden="true"
         className="pointer-events-none fixed -top-[9999px] -left-[9999px] h-1 w-1 overflow-hidden opacity-0"
@@ -421,13 +416,17 @@ export function MiniVinylPlayer() {
                 ? "Pemutar musik mini"
                 : "Mini vinyl music player"
           }
-          className={`flex items-center rounded-full border border-black/10 bg-white/85 shadow-lg ring-1 ring-inset ring-white/60 backdrop-blur-xl transition-colors dark:border-white/15 dark:bg-[#2C2C2E]/92 dark:ring-white/[0.08] ${
+          className={`flex items-center transition-colors ${
+            isTech
+              ? "rounded-none border border-[#4ADE80]/55 bg-[#0B0D0C]/95 shadow-[4px_4px_0px_rgba(74,222,128,0.25)]"
+              : "rounded-full border border-black/10 bg-white/85 shadow-lg ring-1 ring-inset ring-white/60 backdrop-blur-xl dark:border-white/15 dark:bg-[#2C2C2E]/92 dark:ring-white/[0.08]"
+          } ${
             isExpanded
               ? "max-w-[calc(100vw-2rem)] gap-2.5 p-1.5 pr-2.5 sm:max-w-[275px]"
               : "cursor-pointer gap-2 p-1.5 pr-3 hover:border-black/25 dark:hover:border-white/25"
           }`}
         >
-          {/* Vinyl Record Disc (w-11 h-11 / 44px) */}
+          {/* Vinyl Record Disc (Strictly circular .vinyl-disc even in Tech mode) */}
           <button
             type="button"
             onClick={isExpanded ? handleTogglePlay : handleExpand}
@@ -438,9 +437,9 @@ export function MiniVinylPlayer() {
                   ? "Buka pemutar musik"
                   : "Open music player"
             }
-            className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full shadow-md ring-1 ring-black/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground dark:ring-white/15"
+            className="vinyl-disc relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full shadow-md ring-1 ring-black/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground dark:ring-white/15"
           >
-            {/* Rotating Disc Layer (Stops smoothly at exact angle when paused) */}
+            {/* Rotating Disc Layer */}
             <div
               style={{
                 animationPlayState: isActiveSpin ? "running" : "paused",
@@ -492,25 +491,31 @@ export function MiniVinylPlayer() {
                 style={{
                   animationPlayState: isActiveSpin ? "running" : "paused",
                 }}
-                className={`w-[2px] rounded-full bg-neutral-700 transition-all dark:bg-neutral-200 ${
-                  isActiveSpin ? "eq-bar-anim-1" : "h-1.5 opacity-60"
-                }`}
+                className={`w-[2px] transition-all ${
+                  isTech
+                    ? "rounded-none bg-[#4ADE80]"
+                    : "rounded-full bg-neutral-700 dark:bg-neutral-200"
+                } ${isActiveSpin ? "eq-bar-anim-1" : "h-1.5 opacity-60"}`}
               />
               <span
                 style={{
                   animationPlayState: isActiveSpin ? "running" : "paused",
                 }}
-                className={`w-[2px] rounded-full bg-neutral-700 transition-all dark:bg-neutral-200 ${
-                  isActiveSpin ? "eq-bar-anim-2" : "h-2.5 opacity-60"
-                }`}
+                className={`w-[2px] transition-all ${
+                  isTech
+                    ? "rounded-none bg-[#4ADE80]"
+                    : "rounded-full bg-neutral-700 dark:bg-neutral-200"
+                } ${isActiveSpin ? "eq-bar-anim-2" : "h-2.5 opacity-60"}`}
               />
               <span
                 style={{
                   animationPlayState: isActiveSpin ? "running" : "paused",
                 }}
-                className={`w-[2px] rounded-full bg-neutral-700 transition-all dark:bg-neutral-200 ${
-                  isActiveSpin ? "eq-bar-anim-3" : "h-1 opacity-60"
-                }`}
+                className={`w-[2px] transition-all ${
+                  isTech
+                    ? "rounded-none bg-[#4ADE80]"
+                    : "rounded-full bg-neutral-700 dark:bg-neutral-200"
+                } ${isActiveSpin ? "eq-bar-anim-3" : "h-1 opacity-60"}`}
               />
             </div>
           )}
@@ -533,7 +538,13 @@ export function MiniVinylPlayer() {
                       {currentTrack.title}
                     </p>
                     {hasMultipleTracks && (
-                      <span className="shrink-0 rounded bg-black/[0.06] px-1 py-0.2 font-mono text-[9px] text-muted tabular-nums dark:bg-white/[0.1]">
+                      <span
+                        className={`shrink-0 px-1 py-0.2 font-mono text-[9px] text-muted tabular-nums ${
+                          isTech
+                            ? "rounded-none border border-[#4ADE80]/30 bg-[#080A09]"
+                            : "rounded bg-black/[0.06] dark:bg-white/[0.1]"
+                        }`}
+                      >
                         {trackIndex + 1}/{MUSIC_PLAYLIST.length}
                       </span>
                     )}
@@ -541,22 +552,27 @@ export function MiniVinylPlayer() {
 
                   <p
                     className={`mt-0.5 truncate text-[10px] leading-tight ${
-                      hasError ? "text-amber-600 dark:text-amber-400" : "text-muted"
+                      hasError
+                        ? "text-amber-600 dark:text-amber-400"
+                        : "text-muted"
                     }`}
                   >
                     {subtitleText}
                   </p>
                 </div>
 
-                {/* Right: Play/Pause, optional Next Track (only if > 1 song), and Collapse (×) */}
+                {/* Right: Play/Pause, optional Next Track, and Collapse (×) */}
                 <div className="flex shrink-0 items-center gap-1">
-                  {/* Play / Pause */}
                   <button
                     type="button"
                     onClick={handleTogglePlay}
                     aria-label={playPauseLabel}
                     title={playPauseLabel}
-                    className="flex h-7 w-7 items-center justify-center rounded-full bg-foreground text-canvas transition-transform duration-150 hover:opacity-90 active:scale-95"
+                    className={`flex h-7 w-7 items-center justify-center transition-transform duration-150 active:scale-95 ${
+                      isTech
+                        ? "rounded-none border border-[#4ADE80] bg-[#4ADE80] text-[#080A09] hover:opacity-90"
+                        : "rounded-full bg-foreground text-canvas hover:opacity-90"
+                    }`}
                   >
                     {isActiveSpin ? (
                       <Pause className="h-3 w-3 fill-current" />
@@ -565,26 +581,32 @@ export function MiniVinylPlayer() {
                     )}
                   </button>
 
-                  {/* Next / Switch Track (automatically shown when playlist has 2+ tracks) */}
                   {hasMultipleTracks && (
                     <button
                       type="button"
                       onClick={handleNextTrack}
                       aria-label={nextTrackLabel}
                       title={nextTrackLabel}
-                      className="flex h-7 w-7 items-center justify-center rounded-full border border-black/10 bg-canvas text-foreground transition-colors duration-150 hover:border-black/30 active:scale-95 dark:border-white/15 dark:hover:border-white/35"
+                      className={`flex h-7 w-7 items-center justify-center transition-colors duration-150 active:scale-95 ${
+                        isTech
+                          ? "rounded-none border border-[#4ADE80]/40 bg-[#080A09] text-[#E6ECE8] hover:border-[#4ADE80]"
+                          : "rounded-full border border-black/10 bg-canvas text-foreground hover:border-black/30 dark:border-white/15 dark:hover:border-white/35"
+                      }`}
                     >
                       <SkipForward className="h-3 w-3" />
                     </button>
                   )}
 
-                  {/* Collapse Pill (×) */}
                   <button
                     type="button"
                     onClick={handleCollapse}
                     aria-label={closePillLabel}
                     title={closePillLabel}
-                    className="flex h-6.5 w-6.5 items-center justify-center rounded-full text-muted transition-colors duration-150 hover:bg-black/5 hover:text-foreground active:scale-95 dark:hover:bg-white/10"
+                    className={`flex h-6.5 w-6.5 items-center justify-center text-muted transition-colors duration-150 active:scale-95 ${
+                      isTech
+                        ? "rounded-none hover:bg-[#4ADE80]/15 hover:text-[#4ADE80]"
+                        : "rounded-full hover:bg-black/5 hover:text-foreground dark:hover:bg-white/10"
+                    }`}
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>

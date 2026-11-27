@@ -41,7 +41,6 @@ function getStrikeNoiseBuffer(ctx: AudioContext): AudioBuffer {
   ) {
     return cachedStrikeNoiseBuffer;
   }
-  // 18ms white noise buffer with sharp initial transient for metal typebar strike
   const frameCount = Math.max(1, Math.ceil(ctx.sampleRate * 0.018));
   const buffer = ctx.createBuffer(1, frameCount, ctx.sampleRate);
   const data = buffer.getChannelData(0);
@@ -61,7 +60,6 @@ function getClickNoiseBuffer(ctx: AudioContext): AudioBuffer {
   ) {
     return cachedClickNoiseBuffer;
   }
-  // 12ms crisp white noise buffer for tactile micro-click & switch snap
   const frameCount = Math.max(1, Math.ceil(ctx.sampleRate * 0.012));
   const buffer = ctx.createBuffer(1, frameCount, ctx.sampleRate);
   const data = buffer.getChannelData(0);
@@ -75,19 +73,30 @@ function getClickNoiseBuffer(ctx: AudioContext): AudioBuffer {
 }
 
 export function useUiSound() {
-  const { isMuted, toggleMute, setMuted } = useSoundContext();
+  const {
+    soundEnabled,
+    setSoundEnabled,
+    toggleSoundEnabled,
+    isMuted,
+    toggleMute,
+    setMuted,
+  } = useSoundContext();
   const lastTickTimeRef = useRef<number>(0);
   const lastKeyTimeRef = useRef<number>(0);
 
   /**
-   * Mechanical Toggle Switch for Light/Dark Mode:
-   * - Initial crisp click at 0ms (1100 Hz -> 480 Hz, 15ms, tuned slightly brighter for Light / deeper for Dark)
+   * Mechanical Toggle Switch for Theme & Sound Switch:
+   * - Initial crisp click at 0ms (1100 Hz -> 480 Hz, 15ms)
    * - Followed by a thin micro-snap at 18ms (Highpass 2600 Hz noise, 10ms)
    * - Volume: 0.28–0.32
+   * - Pass `forcePlay = true` when toggling Sound effects back ON so confirmation plays immediately
    */
   const playSwitch = useCallback(
-    (isDarkOrMode?: boolean | "light" | "dark") => {
-      if (isMuted) return;
+    (
+      isDarkOrMode?: boolean | "auto" | "light" | "dark" | "tech",
+      forcePlay = false
+    ) => {
+      if (!soundEnabled && !forcePlay) return;
       const ctx = ensureAudioContext();
       if (!ctx) return;
 
@@ -100,13 +109,14 @@ export function useUiSound() {
         const isDark =
           typeof isDarkOrMode === "boolean"
             ? isDarkOrMode
-            : isDarkOrMode === "dark";
+            : isDarkOrMode === "dark" || isDarkOrMode === "tech";
 
         // 1. Primary mechanical switch click at 0ms (15ms)
         const clickOsc = ctx.createOscillator();
         const clickGain = ctx.createGain();
 
-        const startFreq = isDarkOrMode === undefined ? 1100 : isDark ? 980 : 1220;
+        const startFreq =
+          isDarkOrMode === undefined ? 1100 : isDark ? 980 : 1220;
         const endFreq = isDarkOrMode === undefined ? 480 : isDark ? 420 : 540;
 
         clickOsc.type = "triangle";
@@ -146,16 +156,14 @@ export function useUiSound() {
         // Ignore autoplay restriction errors gracefully
       }
     },
-    [isMuted]
+    [soundEnabled]
   );
 
   /**
-   * Crisp Tactile Micro-Click for ID/EN toggle, nav links, Dock icons, and Vinyl controls:
-   * - Highpass noise burst (3200 Hz, 8ms, gain 0.24)
-   * - Punchy pitch drop (triangle 1900 Hz -> 750 Hz in 18ms, gain 0.22)
+   * Crisp Tactile Micro-Click for ID/EN toggle, nav links, Dock icons, and Vinyl controls
    */
   const playTick = useCallback(() => {
-    if (isMuted) return;
+    if (!soundEnabled) return;
     const perfNow =
       typeof performance !== "undefined" ? performance.now() : Date.now();
     if (perfNow - lastTickTimeRef.current < 28) return;
@@ -210,19 +218,14 @@ export function useUiSound() {
     } catch {
       // Ignore if AudioContext has not been unlocked by a click gesture yet
     }
-  }, [isMuted]);
+  }, [soundEnabled]);
 
   /**
-   * Vintage Mechanical Typewriter Keystroke:
-   * - Layer 1 (Metal strike): Short highpass-filtered white noise (2200–3400 Hz, 12–16ms decay)
-   * - Layer 2 (Metal lever resonance): Brief triangle oscillator (1400 Hz -> 480 Hz in 14ms)
-   * - Layer 3 (Carriage/body thump): Soft low thump (180–240 Hz, 24ms decay)
-   * - Organic variation: ±14% random frequency jitter & 0.09–0.14 random volume
-   * - Skips space characters (' ')
+   * Vintage Mechanical Typewriter Keystroke
    */
   const playKeystroke = useCallback(
     (char?: string) => {
-      if (isMuted) return;
+      if (!soundEnabled) return;
       if (char !== undefined && char.trim() === "") return;
 
       const perfNow =
@@ -308,14 +311,14 @@ export function useUiSound() {
         // Ignore if blocked by browser autoplay policy
       }
     },
-    [isMuted]
+    [soundEnabled]
   );
 
   /**
    * Subtle Vintage Typewriter Carriage Return Bell ("ting!")
    */
   const playTypewriterBell = useCallback(() => {
-    if (isMuted) return;
+    if (!soundEnabled) return;
     const ctx = ensureAudioContext();
     if (!ctx) return;
 
@@ -360,9 +363,12 @@ export function useUiSound() {
     } catch {
       // Ignore if blocked by browser autoplay policy
     }
-  }, [isMuted]);
+  }, [soundEnabled]);
 
   return {
+    soundEnabled,
+    setSoundEnabled,
+    toggleSoundEnabled,
     isMuted,
     toggleMute,
     setMuted,
