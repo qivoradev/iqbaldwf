@@ -5,7 +5,6 @@ import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowUpRight,
-  CheckCircle2,
   Maximize2,
   X,
 } from "lucide-react";
@@ -20,7 +19,7 @@ interface ProjectModalProps {
 
 export function ProjectModal({ project, onClose }: ProjectModalProps) {
   const { lang } = useLanguage();
-  const { mounted } = useTheme();
+  const { mounted, resolvedTheme } = useTheme();
   const { playTick } = useUiSound();
   const [isZoomed, setIsZoomed] = useState(false);
 
@@ -92,18 +91,10 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
             >
               {/* 1. Header (shrink-0, solid separated from scroll area) */}
               <div className="flex shrink-0 items-center justify-between border-b border-black/10 bg-surface px-4 py-3 sm:px-6 sm:py-4 dark:border-white/10">
-                <div className="flex items-center gap-2">
-                  <span
-                    className="h-2 w-2 rounded-full"
-                    style={{
-                      backgroundColor: track?.accentHex ?? "#16A34A",
-                    }}
-                  />
-                  <span className="font-mono text-xs text-muted tabular-nums">
-                    {track ? t(track.title, lang) : project.trackSlug} ·{" "}
-                    {project.year}
-                  </span>
-                </div>
+                <span className="font-mono text-xs text-muted tabular-nums">
+                  {track ? t(track.title, lang) : project.trackSlug} /{" "}
+                  {project.year}
+                </span>
 
                 <button
                   type="button"
@@ -199,24 +190,21 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
                   </div>
                 )}
 
-                {/* 3 Key Insights & Optional Recommendation */}
+                {/* 3 Key Findings & Optional Recommendation */}
                 <div className="mt-4 border-t border-black/[0.08] pt-4 sm:mt-5 dark:border-white/[0.08]">
                   <h3 className="font-mono text-[11px] tracking-wider text-muted uppercase">
-                    {lang === "id" ? "Temuan Utama" : "Key Insights"}
+                    {lang === "id" ? "Temuan Utama" : "Key Findings"}
                   </h3>
 
-                  <ul className="mt-2.5 space-y-2">
+                  <ul className="mt-2.5 space-y-2.5">
                     {project.keyInsights[lang].map((insight, idx) => (
                       <li
                         key={idx}
-                        className="flex items-start gap-2.5 text-sm leading-[1.62] text-foreground/90"
+                        className="flex items-baseline gap-3 text-sm leading-[1.62] text-foreground/90"
                       >
-                        <CheckCircle2
-                          className="mt-1 h-3.5 w-3.5 shrink-0"
-                          style={{
-                            color: track?.accentHex ?? "#16A34A",
-                          }}
-                        />
+                        <span className="shrink-0 font-mono text-xs text-muted tabular-nums select-none">
+                          {String(idx + 1).padStart(2, "0")}
+                        </span>
                         <span>{insight}</span>
                       </li>
                     ))}
@@ -241,14 +229,18 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
                     target="_blank"
                     rel="noopener noreferrer"
                     onMouseEnter={playTick}
-                    className="inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-full bg-[#16A34A] px-5 text-xs font-medium text-white transition-all duration-150 hover:opacity-90 active:scale-[0.98] sm:h-9 sm:w-auto"
+                    className={
+                      resolvedTheme === "tech"
+                        ? "inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-none border border-[#4ADE80] bg-[#4ADE80] px-5 font-mono text-xs font-medium text-[#080A09] transition-all duration-150 hover:opacity-90 active:scale-[0.98] sm:h-9 sm:w-auto"
+                        : "inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-full bg-[#111111] px-5 text-xs font-medium text-white transition-all duration-150 hover:opacity-90 active:scale-[0.98] sm:h-9 sm:w-auto dark:bg-[#F5F5F5] dark:text-[#111111]"
+                    }
                   >
                     <span>
                       {lang === "id"
                         ? "Lihat Dashboard Interaktif"
                         : "View Interactive Dashboard"}
                     </span>
-                    <ArrowUpRight className="h-3.5 w-3.5" />
+                    <ArrowUpRight className="h-3.5 w-3.5 opacity-80" />
                   </a>
                 )}
 
@@ -264,7 +256,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
                       ? "Dokumentasi Lengkap di GitHub"
                       : "Full Documentation on GitHub"}
                   </span>
-                  <ArrowUpRight className="h-3.5 w-3.5" />
+                  <ArrowUpRight className="h-3.5 w-3.5 opacity-60" />
                 </a>
               </div>
             </motion.div>

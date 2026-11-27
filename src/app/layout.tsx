@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "iqbaldwifathonah",
     description:
-      "Data Analyst Portfolio Hub — SQL, Microsoft Excel & Google Looker Studio Case Studies.",
+      "Data Analyst Portfolio Hub: SQL, Microsoft Excel & Google Looker Studio Case Studies.",
     url: "https://iqbaldwifathonah.vercel.app",
     siteName: "iqbaldwifathonah",
     type: "website",
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "iqbaldwifathonah",
     description:
-      "Data Analyst Portfolio Hub — SQL, Microsoft Excel & Google Looker Studio Case Studies.",
+      "Data Analyst Portfolio Hub: SQL, Microsoft Excel & Google Looker Studio Case Studies.",
   },
 };
 

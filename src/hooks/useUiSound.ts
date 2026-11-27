@@ -88,7 +88,7 @@ export function useUiSound() {
    * Mechanical Toggle Switch for Theme & Sound Switch:
    * - Initial crisp click at 0ms (1100 Hz -> 480 Hz, 15ms)
    * - Followed by a thin micro-snap at 18ms (Highpass 2600 Hz noise, 10ms)
-   * - Volume: 0.28–0.32
+   * - Volume: 0.28-0.32
    * - Pass `forcePlay = true` when toggling Sound effects back ON so confirmation plays immediately
    */
   const playSwitch = useCallback(
@@ -246,7 +246,7 @@ export function useUiSound() {
         const masterVol = 0.09 + Math.random() * 0.05;
         const strikeDecay = 0.012 + Math.random() * 0.004;
 
-        // Layer 1: Highpass-filtered white noise (2200–3400 Hz)
+        // Layer 1: Highpass-filtered white noise (2200-3400 Hz)
         const noiseSource = ctx.createBufferSource();
         noiseSource.buffer = getStrikeNoiseBuffer(ctx);
 
@@ -287,7 +287,7 @@ export function useUiSound() {
         leverOsc.start(now);
         leverOsc.stop(now + 0.015);
 
-        // Layer 3: Typewriter body thump (180–240 Hz, 24ms decay)
+        // Layer 3: Typewriter body thump (180-240 Hz, 24ms decay)
         const bodyOsc = ctx.createOscillator();
         const bodyGain = ctx.createGain();
 

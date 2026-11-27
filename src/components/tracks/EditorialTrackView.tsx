@@ -40,8 +40,8 @@ export function EditorialTrackView({}: EditorialTrackViewProps) {
           {dataTrack
             ? t(dataTrack.badgeLabel, lang)
             : lang === "id"
-              ? "Data Analytics · Fokus Utama"
-              : "Data Analytics · Primary Focus"}
+              ? "Data Analytics / Fokus Utama"
+              : "Data Analytics / Primary Focus"}
         </p>
         <h1 className="mt-1.5 text-2xl font-normal tracking-[-0.025em] text-foreground md:text-[28px]">
           {dataTrack ? t(dataTrack.title, lang) : "Data Analyst"}
@@ -52,7 +52,7 @@ export function EditorialTrackView({}: EditorialTrackViewProps) {
 
         {dataTrack && (
           <p className="mt-3.5 font-mono text-xs text-neutral-500 dark:text-neutral-400">
-            {dataTrack.coreStack.join(" · ")}
+            {dataTrack.coreStack.join(" / ")}
           </p>
         )}
       </header>
@@ -92,9 +92,9 @@ export function EditorialTrackView({}: EditorialTrackViewProps) {
                   {project.title}
                 </h2>
 
-                <div className="flex shrink-0 items-center gap-2 font-mono text-xs text-muted tabular-nums">
+                <div className="flex shrink-0 items-center gap-1.5 font-mono text-xs text-muted tabular-nums">
                   <span>{t(project.role, lang)}</span>
-                  <span>·</span>
+                  <span>/</span>
                   <span>{project.year}</span>
                 </div>
               </div>
@@ -105,7 +105,7 @@ export function EditorialTrackView({}: EditorialTrackViewProps) {
 
               <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
                 <span className="font-mono text-xs text-neutral-500 dark:text-neutral-400">
-                  {project.techStack.join(" · ")}
+                  {project.techStack.join(" / ")}
                 </span>
 
                 <div className="flex items-center gap-3">

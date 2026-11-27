@@ -247,7 +247,7 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
     },
     {
       id: "frontend",
-      label: lang === "id" ? "Web Dev · Segera Hadir" : "Web Dev · Coming Soon",
+      label: lang === "id" ? "Web Dev / Segera Hadir" : "Web Dev / Coming Soon",
       mobileLabel: lang === "id" ? "Segera" : "Soon",
       bgClass:
         "bg-[#0A0A0A] text-white dark:bg-[#0A0A0A] ring-1 ring-inset ring-black/15 dark:ring-white/[0.08] shadow-xs",
@@ -256,7 +256,7 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
     },
     {
       id: "lab",
-      label: lang === "id" ? "Web Lab · Segera Hadir" : "Web Lab · Coming Soon",
+      label: lang === "id" ? "Web Lab / Segera Hadir" : "Web Lab / Coming Soon",
       mobileLabel: lang === "id" ? "Segera" : "Soon",
       bgClass: "bg-[#F94D23] text-white",
       isComingSoon: true,

@@ -57,14 +57,14 @@ function GitHubMiniIcon() {
 const PARAGRAPHS_ID: { greeting: string; p1: TextSegment[]; p2: TextSegment[] } = {
   greeting: "Hai, terima kasih sudah mampir.",
   p1: [
-    { text: "Saya Iqbal Dwi Fathonah, fresh graduate S1 Teknologi Informasi " },
+    { text: "Saya Iqbal Dwi Fathonah, lulusan S1 Teknologi Informasi " },
     { text: "Universitas Muhammadiyah Yogyakarta (2026)", underline: true },
     {
-      text: " yang berdedikasi mengolah data mentah menjadi insight bisnis yang rapi dan terukur.",
+      text: " yang fokus mengolah data mentah menjadi analisis bisnis yang jelas dan terstruktur.",
     },
   ],
   p2: [
-    { text: "Saat ini saya berfokus sebagai " },
+    { text: "Sehari-hari saya bekerja di bidang " },
     { text: "Data Analyst", underline: true, action: "data-analyst" },
     { text: " menggunakan " },
     { text: "SQL", underline: true },
@@ -72,7 +72,7 @@ const PARAGRAPHS_ID: { greeting: string; p1: TextSegment[]; p2: TextSegment[] } 
     { text: "Excel", underline: true },
     { text: ", dan " },
     { text: "Looker Studio", underline: true },
-    { text: " untuk mendukung keputusan operasional." },
+    { text: " untuk membantu pengambilan keputusan operasional." },
   ],
 };
 
@@ -80,23 +80,23 @@ const PARAGRAPHS_EN: { greeting: string; p1: TextSegment[]; p2: TextSegment[] } 
   greeting: "Hey, glad you stopped by.",
   p1: [
     {
-      text: "I'm Iqbal Dwi Fathonah, a Bachelor of Information Technology fresh graduate from ",
+      text: "I'm Iqbal Dwi Fathonah, an Information Technology graduate from ",
     },
     { text: "Universitas Muhammadiyah Yogyakarta (2026)", underline: true },
     {
-      text: " dedicated to transforming raw data into clean, measurable business insights.",
+      text: " focused on turning raw data into clear, structured business analysis.",
     },
   ],
   p2: [
-    { text: "Currently, I focus on " },
+    { text: "My current work centers on " },
     { text: "Data Analysis", underline: true, action: "data-analyst" },
-    { text: " using " },
+    { text: " with " },
     { text: "SQL", underline: true },
     { text: ", " },
     { text: "Excel", underline: true },
     { text: ", and " },
     { text: "Looker Studio", underline: true },
-    { text: " to support operational decision-making." },
+    { text: " to support practical operational decisions." },
   ],
 };
 
@@ -449,13 +449,13 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
 
                   {/* 3. Footer (shrink-0) */}
                   <div className="flex shrink-0 flex-col justify-between gap-3 border-t border-black/10 bg-surface px-4 py-3.5 text-xs sm:flex-row sm:items-center sm:px-6 sm:py-4 dark:border-white/10">
-                    <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-muted">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-muted">
                       <span className="font-medium text-foreground">
                         {activeCertificate.issuer}
                       </span>
-                      <span>·</span>
+                      <span>/</span>
                       <span>{t(activeCertificate.fullDate, lang)}</span>
-                      <span>·</span>
+                      <span>/</span>
                       <span className="font-mono text-[11px] text-foreground">
                         ID: {activeCertificate.credentialId}
                       </span>
