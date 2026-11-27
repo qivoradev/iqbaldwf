@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <style>
+    .globe {
+      stroke: #262626;
+    }
+    @media (prefers-color-scheme: dark) {
+      .globe {
+        stroke: #E5E5E5;
+      }
+    }
+  </style>
+  <g class="globe" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="9" />
+    <ellipse cx="12" cy="12" rx="4.2" ry="9" />
+    <path d="M3.5 9.25h17" />
+    <path d="M3.5 14.75h17" />
+  </g>
+</svg>

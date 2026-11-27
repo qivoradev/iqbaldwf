@@ -67,8 +67,9 @@ export function TopPillNavbar({
   const { playSwitch, playTick } = useUiSound();
 
   const handleThemeToggle = () => {
-    const nextMode = toggleTheme();
-    playSwitch(nextMode);
+    const nextIsDark = theme !== "dark";
+    toggleTheme();
+    playSwitch(nextIsDark);
   };
 
   const handleLanguageToggle = () => {

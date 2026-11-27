@@ -20,16 +20,16 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+const SITE_DESCRIPTION =
+  "Personal Portfolio Hub Iqbal Dwi Fathonah, Fresh Graduate S1 Teknologi Informasi 2026 Universitas Muhammadiyah Yogyakarta. Data Analyst (SQL, Excel, Looker Studio).";
+
 export const metadata: Metadata = {
-  title: {
-    default: `${PROFILE.name} (${PROFILE.handle}) — Data Analyst & Web Enthusiast`,
-    template: `%s · ${PROFILE.name} (${PROFILE.handle})`,
-  },
-  description:
-    "Personal Portfolio Hub Iqbal Dwi Fathonah (iqbaldf), Fresh Graduate S1 Teknologi Informasi 2026 Universitas Muhammadiyah Yogyakarta. Data Analyst (SQL, Excel, Looker Studio).",
+  metadataBase: new URL("https://iqbaldwifathonah.vercel.app"),
+  title: "iqbaldwifathonah",
+  description: SITE_DESCRIPTION,
   keywords: [
     "Iqbal Dwi Fathonah",
-    "iqbaldf",
+    "iqbaldwifathonah",
     "qivoradev",
     "Data Analyst Indonesia",
     "Universitas Muhammadiyah Yogyakarta",
@@ -39,11 +39,19 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: PROFILE.name }],
   openGraph: {
-    title: `${PROFILE.name} (${PROFILE.handle}) — Personal Portfolio Hub`,
+    title: "iqbaldwifathonah",
     description:
-      "Data Analyst Portfolio Hub: SQL, Microsoft Excel & Google Looker Studio Case Studies.",
+      "Data Analyst Portfolio Hub — SQL, Microsoft Excel & Google Looker Studio Case Studies.",
+    url: "https://iqbaldwifathonah.vercel.app",
+    siteName: "iqbaldwifathonah",
     type: "website",
     locale: "id_ID",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "iqbaldwifathonah",
+    description:
+      "Data Analyst Portfolio Hub — SQL, Microsoft Excel & Google Looker Studio Case Studies.",
   },
 };
 

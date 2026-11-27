@@ -15,6 +15,7 @@ function getAudioContextClass(): AudioContextConstructor | null {
 
 let sharedAudioCtx: AudioContext | null = null;
 let cachedStrikeNoiseBuffer: AudioBuffer | null = null;
+let cachedClickNoiseBuffer: AudioBuffer | null = null;
 
 function ensureAudioContext(): AudioContext | null {
   const AudioCtx = getAudioContextClass();
@@ -40,7 +41,7 @@ function getStrikeNoiseBuffer(ctx: AudioContext): AudioBuffer {
   ) {
     return cachedStrikeNoiseBuffer;
   }
-  // 18ms crisp white noise buffer with sharp initial transient for metal typebar strike
+  // 18ms white noise buffer with sharp initial transient for metal typebar strike
   const frameCount = Math.max(1, Math.ceil(ctx.sampleRate * 0.018));
   const buffer = ctx.createBuffer(1, frameCount, ctx.sampleRate);
   const data = buffer.getChannelData(0);
@@ -53,41 +54,94 @@ function getStrikeNoiseBuffer(ctx: AudioContext): AudioBuffer {
   return buffer;
 }
 
+function getClickNoiseBuffer(ctx: AudioContext): AudioBuffer {
+  if (
+    cachedClickNoiseBuffer &&
+    cachedClickNoiseBuffer.sampleRate === ctx.sampleRate
+  ) {
+    return cachedClickNoiseBuffer;
+  }
+  // 12ms crisp white noise buffer for tactile micro-click & switch snap
+  const frameCount = Math.max(1, Math.ceil(ctx.sampleRate * 0.012));
+  const buffer = ctx.createBuffer(1, frameCount, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < frameCount; i++) {
+    const progress = i / frameCount;
+    const envelope = Math.pow(1 - progress, 1.8);
+    data[i] = (Math.random() * 2 - 1) * envelope;
+  }
+  cachedClickNoiseBuffer = buffer;
+  return buffer;
+}
+
 export function useUiSound() {
   const { isMuted, toggleMute, setMuted } = useSoundContext();
   const lastTickTimeRef = useRef<number>(0);
   const lastKeyTimeRef = useRef<number>(0);
 
   /**
-   * Crisp physical switch click for Light/Dark theme toggle (~30ms)
+   * Mechanical Toggle Switch for Light/Dark Mode:
+   * - Initial crisp click at 0ms (1100 Hz -> 480 Hz, 15ms, tuned slightly brighter for Light / deeper for Dark)
+   * - Followed by a thin micro-snap at 18ms (Highpass 2600 Hz noise, 10ms)
+   * - Volume: 0.28–0.32
    */
   const playSwitch = useCallback(
-    (nextMode?: "light" | "dark") => {
+    (isDarkOrMode?: boolean | "light" | "dark") => {
       if (isMuted) return;
       const ctx = ensureAudioContext();
       if (!ctx) return;
 
       try {
+        if (ctx.state === "suspended") {
+          void ctx.resume().catch(() => {});
+        }
+
         const now = ctx.currentTime;
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
+        const isDark =
+          typeof isDarkOrMode === "boolean"
+            ? isDarkOrMode
+            : isDarkOrMode === "dark";
 
-        const isToLight = nextMode !== "dark";
-        const startFreq = isToLight ? 520 : 680;
-        const endFreq = isToLight ? 880 : 380;
+        // 1. Primary mechanical switch click at 0ms (15ms)
+        const clickOsc = ctx.createOscillator();
+        const clickGain = ctx.createGain();
 
-        osc.type = "triangle";
-        osc.frequency.setValueAtTime(startFreq, now);
-        osc.frequency.exponentialRampToValueAtTime(endFreq, now + 0.028);
+        const startFreq = isDarkOrMode === undefined ? 1100 : isDark ? 980 : 1220;
+        const endFreq = isDarkOrMode === undefined ? 480 : isDark ? 420 : 540;
 
-        gain.gain.setValueAtTime(0.055, now);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.032);
+        clickOsc.type = "triangle";
+        clickOsc.frequency.setValueAtTime(startFreq, now);
+        clickOsc.frequency.exponentialRampToValueAtTime(endFreq, now + 0.015);
 
-        osc.connect(gain);
-        gain.connect(ctx.destination);
+        clickGain.gain.setValueAtTime(0.3, now);
+        clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.016);
 
-        osc.start(now);
-        osc.stop(now + 0.034);
+        clickOsc.connect(clickGain);
+        clickGain.connect(ctx.destination);
+
+        clickOsc.start(now);
+        clickOsc.stop(now + 0.018);
+
+        // 2. Crisp micro-snap at +18ms (Highpass 2600 Hz, 10ms)
+        const snapTime = now + 0.018;
+        const noiseSource = ctx.createBufferSource();
+        noiseSource.buffer = getClickNoiseBuffer(ctx);
+
+        const highpass = ctx.createBiquadFilter();
+        highpass.type = "highpass";
+        highpass.frequency.setValueAtTime(isDark ? 2450 : 2750, snapTime);
+        highpass.Q.setValueAtTime(1.1, snapTime);
+
+        const snapGain = ctx.createGain();
+        snapGain.gain.setValueAtTime(0.28, snapTime);
+        snapGain.gain.exponentialRampToValueAtTime(0.001, snapTime + 0.01);
+
+        noiseSource.connect(highpass);
+        highpass.connect(snapGain);
+        snapGain.connect(ctx.destination);
+
+        noiseSource.start(snapTime);
+        noiseSource.stop(snapTime + 0.012);
       } catch {
         // Ignore autoplay restriction errors gracefully
       }
@@ -96,35 +150,63 @@ export function useUiSound() {
   );
 
   /**
-   * Subtle micro-pop / tick when hovering Dock squircles & Pill buttons (~14ms)
+   * Crisp Tactile Micro-Click for ID/EN toggle, nav links, Dock icons, and Vinyl controls:
+   * - Highpass noise burst (3200 Hz, 8ms, gain 0.24)
+   * - Punchy pitch drop (triangle 1900 Hz -> 750 Hz in 18ms, gain 0.22)
    */
   const playTick = useCallback(() => {
     if (isMuted) return;
     const perfNow =
       typeof performance !== "undefined" ? performance.now() : Date.now();
-    if (perfNow - lastTickTimeRef.current < 45) return;
+    if (perfNow - lastTickTimeRef.current < 28) return;
     lastTickTimeRef.current = perfNow;
 
     const ctx = ensureAudioContext();
     if (!ctx) return;
 
     try {
+      if (ctx.state === "suspended") {
+        void ctx.resume().catch(() => {});
+      }
+
       const now = ctx.currentTime;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
 
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(640, now);
-      osc.frequency.exponentialRampToValueAtTime(410, now + 0.014);
+      // 1. Short highpass noise burst (3200 Hz, 8ms, gain 0.24)
+      const noiseSource = ctx.createBufferSource();
+      noiseSource.buffer = getClickNoiseBuffer(ctx);
 
-      gain.gain.setValueAtTime(0.028, now);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.016);
+      const highpass = ctx.createBiquadFilter();
+      highpass.type = "highpass";
+      highpass.frequency.setValueAtTime(3200, now);
+      highpass.Q.setValueAtTime(1.0, now);
 
-      osc.connect(gain);
-      gain.connect(ctx.destination);
+      const noiseGain = ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.24, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.008);
 
-      osc.start(now);
-      osc.stop(now + 0.018);
+      noiseSource.connect(highpass);
+      highpass.connect(noiseGain);
+      noiseGain.connect(ctx.destination);
+
+      noiseSource.start(now);
+      noiseSource.stop(now + 0.01);
+
+      // 2. Punchy pitch drop (triangle 1900 Hz -> 750 Hz in 18ms, gain 0.22)
+      const bodyOsc = ctx.createOscillator();
+      const bodyGain = ctx.createGain();
+
+      bodyOsc.type = "triangle";
+      bodyOsc.frequency.setValueAtTime(1900, now);
+      bodyOsc.frequency.exponentialRampToValueAtTime(750, now + 0.018);
+
+      bodyGain.gain.setValueAtTime(0.22, now);
+      bodyGain.gain.exponentialRampToValueAtTime(0.001, now + 0.018);
+
+      bodyOsc.connect(bodyGain);
+      bodyGain.connect(ctx.destination);
+
+      bodyOsc.start(now);
+      bodyOsc.stop(now + 0.02);
     } catch {
       // Ignore if AudioContext has not been unlocked by a click gesture yet
     }
@@ -152,15 +234,16 @@ export function useUiSound() {
       if (!ctx) return;
 
       try {
+        if (ctx.state === "suspended") {
+          void ctx.resume().catch(() => {});
+        }
+
         const now = ctx.currentTime;
-        // ±14% frequency variation (0.86 to 1.14)
         const jitter = 0.86 + Math.random() * 0.28;
-        // Random volume between 0.09 and 0.14
         const masterVol = 0.09 + Math.random() * 0.05;
-        // Random strike decay between 12ms and 16ms
         const strikeDecay = 0.012 + Math.random() * 0.004;
 
-        // Layer 1: Highpass-filtered white noise (2200–3400 Hz) for metal typebar clack on paper
+        // Layer 1: Highpass-filtered white noise (2200–3400 Hz)
         const noiseSource = ctx.createBufferSource();
         noiseSource.buffer = getStrikeNoiseBuffer(ctx);
 
@@ -229,10 +312,7 @@ export function useUiSound() {
   );
 
   /**
-   * Subtle Vintage Typewriter Carriage Return Bell ("ting!"):
-   * - Fundamental sine at 2550 Hz + soft harmonic at 5100 Hz
-   * - Decay 0.55s, gentle volume 0.05
-   * - Triggered once when About typewriter finishes naturally (not when skipped)
+   * Subtle Vintage Typewriter Carriage Return Bell ("ting!")
    */
   const playTypewriterBell = useCallback(() => {
     if (isMuted) return;
@@ -240,9 +320,12 @@ export function useUiSound() {
     if (!ctx) return;
 
     try {
+      if (ctx.state === "suspended") {
+        void ctx.resume().catch(() => {});
+      }
+
       const now = ctx.currentTime;
 
-      // Fundamental bell tone (2550 Hz)
       const bellOsc = ctx.createOscillator();
       const bellGain = ctx.createGain();
 
@@ -259,7 +342,6 @@ export function useUiSound() {
       bellOsc.start(now);
       bellOsc.stop(now + 0.56);
 
-      // Soft metallic overtone harmonic (5100 Hz)
       const harmonicOsc = ctx.createOscillator();
       const harmonicGain = ctx.createGain();
 
