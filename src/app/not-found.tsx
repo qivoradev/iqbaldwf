@@ -7,7 +7,7 @@ export default function NotFound() {
       <TopPillNavbar backHref="/" />
 
       <main className="mx-auto flex flex-1 max-w-[600px] flex-col items-center justify-center px-6 text-center">
-        <p className="font-mono text-xs text-muted">404 / Not Found</p>
+        <p className="font-mono text-xs text-muted">404</p>
         <h1 className="mt-2 text-2xl font-normal tracking-[-0.025em] text-foreground">
           Halaman tidak ditemukan
         </h1>

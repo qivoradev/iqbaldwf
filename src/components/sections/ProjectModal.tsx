@@ -107,7 +107,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
                 }`}
               >
                 <span className="font-mono text-xs text-muted tabular-nums">
-                  {track ? t(track.title, lang) : project.trackSlug} /{" "}
+                  {track ? t(track.title, lang) : project.trackSlug},{" "}
                   {project.year}
                 </span>
 

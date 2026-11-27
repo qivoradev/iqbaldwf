@@ -546,13 +546,11 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
                         : "border-black/10 bg-surface dark:border-white/10"
                     }`}
                   >
-                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-muted">
+                    <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-muted">
                       <span className="font-medium text-foreground">
-                        {activeCertificate.issuer}
+                        {activeCertificate.issuer},
                       </span>
-                      <span>/</span>
-                      <span>{t(activeCertificate.fullDate, lang)}</span>
-                      <span>/</span>
+                      <span>{t(activeCertificate.fullDate, lang)},</span>
                       <span className="font-mono text-[11px] text-foreground">
                         ID: {activeCertificate.credentialId}
                       </span>

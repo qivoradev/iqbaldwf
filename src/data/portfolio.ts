@@ -135,8 +135,8 @@ export const TRACKS: Track[] = [
       en: "Data Analyst",
     },
     badgeLabel: {
-      id: "Data Analytics / Fokus Utama",
-      en: "Data Analytics / Primary Focus",
+      id: "Data Analytics",
+      en: "Data Analytics",
     },
     headline: {
       id: "Mengolah data transaksi dan operasional menjadi laporan yang jernih dan siap digunakan.",
@@ -168,12 +168,12 @@ export const TRACKS: Track[] = [
       en: "Soon",
     },
     dockTooltip: {
-      id: "Web Dev / Segera Hadir",
-      en: "Web Dev / Coming Soon",
+      id: "Web Dev (Segera Hadir)",
+      en: "Web Dev (Coming Soon)",
     },
     badgeLabel: {
-      id: "Frontend & Web Dev / Segera Hadir",
-      en: "Frontend & Web Dev / Coming Soon",
+      id: "Frontend & Web Dev (Segera Hadir)",
+      en: "Frontend & Web Dev (Coming Soon)",
     },
     headline: {
       id: "Dokumentasi studi kasus pengembangan web sedang disiapkan.",
@@ -199,12 +199,12 @@ export const TRACKS: Track[] = [
       en: "Soon",
     },
     dockTooltip: {
-      id: "Web Lab / Segera Hadir",
-      en: "Web Lab / Coming Soon",
+      id: "Web Lab (Segera Hadir)",
+      en: "Web Lab (Coming Soon)",
     },
     badgeLabel: {
-      id: "Web Lab & Eksperimen / Segera Hadir",
-      en: "Web Lab & Experiments / Coming Soon",
+      id: "Web Lab & Eksperimen (Segera Hadir)",
+      en: "Web Lab & Experiments (Coming Soon)",
     },
     headline: {
       id: "Ruang eksperimen teknis dan QA Engineering sedang disiapkan.",
@@ -386,7 +386,7 @@ export const CERTIFICATES: CertificateItem[] = [
   {
     id: "cert-it-specialist-ai",
     title: "IT Specialist: Artificial Intelligence",
-    issuer: "Certiport / CertNexus / Pearson",
+    issuer: "Certiport, CertNexus, Pearson",
     shortDate: {
       id: "Jun 2026",
       en: "Jun 2026",
@@ -403,7 +403,7 @@ export const CERTIFICATES: CertificateItem[] = [
   {
     id: "cert-bnsp-cwdev",
     title: "Certified Web Developer (CWDev)",
-    issuer: "BNSP / LSP Informatika",
+    issuer: "BNSP, LSP Informatika",
     shortDate: {
       id: "Mar 2026",
       en: "Mar 2026",

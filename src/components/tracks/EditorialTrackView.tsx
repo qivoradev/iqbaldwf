@@ -39,14 +39,7 @@ export function EditorialTrackView({}: EditorialTrackViewProps) {
     >
       {/* Clean Editorial Header: 100% focused on Data Analyst */}
       <header className="pb-6">
-        <p className="font-mono text-xs text-muted">
-          {dataTrack
-            ? t(dataTrack.badgeLabel, lang)
-            : lang === "id"
-              ? "Data Analytics / Fokus Utama"
-              : "Data Analytics / Primary Focus"}
-        </p>
-        <h1 className="mt-1.5 text-2xl font-normal tracking-[-0.025em] text-foreground md:text-[28px]">
+        <h1 className="text-2xl font-normal tracking-[-0.025em] text-foreground md:text-[28px]">
           {dataTrack ? t(dataTrack.title, lang) : "Data Analyst"}
         </h1>
         <p className="mt-2.5 text-[15px] leading-[1.65] font-normal text-muted">
@@ -61,7 +54,7 @@ export function EditorialTrackView({}: EditorialTrackViewProps) {
                 : "text-neutral-500 dark:text-neutral-400"
             }`}
           >
-            {dataTrack.coreStack.join(" / ")}
+            {dataTrack.coreStack.join(", ")}
           </p>
         )}
       </header>
@@ -111,11 +104,9 @@ export function EditorialTrackView({}: EditorialTrackViewProps) {
                   {project.title}
                 </h2>
 
-                <div className="flex shrink-0 items-center gap-1.5 font-mono text-xs text-muted tabular-nums">
-                  <span>{t(project.role, lang)}</span>
-                  <span>/</span>
-                  <span>{project.year}</span>
-                </div>
+                <span className="shrink-0 font-mono text-xs text-muted tabular-nums">
+                  {project.year}
+                </span>
               </div>
 
               <p className="mt-2 text-sm leading-[1.65] font-normal text-muted">
@@ -130,7 +121,7 @@ export function EditorialTrackView({}: EditorialTrackViewProps) {
                       : "text-neutral-500 dark:text-neutral-400"
                   }`}
                 >
-                  {project.techStack.join(" / ")}
+                  {project.techStack.join(", ")}
                 </span>
 
                 <div className="flex items-center gap-3">
@@ -158,8 +149,8 @@ export function EditorialTrackView({}: EditorialTrackViewProps) {
         <div className="mt-10">
           <p className="font-mono text-xs text-muted">
             {lang === "id"
-              ? "Catatan Perkembangan / Living Log"
-              : "Living Log / Recent Updates"}
+              ? "Catatan Perkembangan"
+              : "Recent Updates"}
           </p>
           <div
             className={
