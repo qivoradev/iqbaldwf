@@ -307,13 +307,13 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
   };
 
   return (
-    <div className="mx-auto w-full max-w-[360px] md:w-fit md:max-w-none">
-      {/* Desktop Horizontal Double-Bezel Glass/Graphite Dock (>= md) */}
+    <div className="mx-auto w-fit max-w-[calc(100vw-2rem)] sm:max-w-none">
+      {/* Desktop Horizontal Double-Bezel Glass/Graphite Dock (>= sm) */}
       <div
         role="toolbar"
         aria-label="Portfolio tracks and direct social links"
         onMouseLeave={() => setHoveredId(null)}
-        className="hidden md:flex md:items-center md:gap-2 md:rounded-[22px] md:border md:border-black/[0.08] md:bg-white/75 md:p-2 md:shadow-[0_8px_30px_rgb(0,0,0,0.06)] md:ring-1 md:ring-inset md:ring-white/60 md:backdrop-blur-xl dark:md:border dark:md:border-white/[0.16] dark:md:bg-[#2C2C2E]/95 dark:md:shadow-[0_12px_36px_rgba(0,0,0,0.65)] dark:md:ring-1 dark:md:ring-inset dark:md:ring-white/[0.08]"
+        className="hidden sm:flex sm:items-center sm:gap-2 sm:rounded-[22px] sm:border sm:border-black/[0.08] sm:bg-white/75 sm:p-2 sm:shadow-[0_8px_30px_rgb(0,0,0,0.06)] sm:ring-1 sm:ring-inset sm:ring-white/60 sm:backdrop-blur-xl dark:sm:border dark:sm:border-white/[0.16] dark:sm:bg-[#2C2C2E]/95 dark:sm:shadow-[0_12px_36px_rgba(0,0,0,0.65)] dark:sm:ring-1 dark:sm:ring-inset dark:sm:ring-white/[0.08]"
       >
         {/* Left: Portfolio Tracks */}
         <div className="flex items-center gap-2">
@@ -422,13 +422,13 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
         </div>
       </div>
 
-      {/* Mobile 4-Column Grid Dock (< md) */}
+      {/* Mobile Compact Dock (< 640px / < sm) */}
       <div
         role="toolbar"
         aria-label="Mobile portfolio tracks and social links"
-        className="rounded-[22px] border border-black/[0.08] bg-white/80 p-3.5 shadow-[0_8px_30px_rgb(0,0,0,0.06)] ring-1 ring-inset ring-white/60 backdrop-blur-xl md:hidden dark:border dark:border-white/[0.16] dark:bg-[#2C2C2E]/95 dark:shadow-[0_12px_36px_rgba(0,0,0,0.65)] dark:ring-1 dark:ring-inset dark:ring-white/[0.08]"
+        className="mx-auto w-fit max-w-[calc(100vw-2rem)] rounded-[24px] border border-black/[0.08] bg-white/80 px-4 py-4 shadow-[0_8px_30px_rgb(0,0,0,0.06)] ring-1 ring-inset ring-white/60 backdrop-blur-xl sm:hidden dark:border dark:border-white/[0.16] dark:bg-[#2C2C2E]/95 dark:shadow-[0_12px_36px_rgba(0,0,0,0.65)] dark:ring-1 dark:ring-inset dark:ring-white/[0.08]"
       >
-        <div className="grid grid-cols-4 gap-2.5">
+        <div className="grid grid-cols-4 gap-3 min-[375px]:gap-x-3.5 min-[375px]:gap-y-2.5">
           {trackItems.map((item) => {
             const isShaking = shakingId === item.id;
             return (
@@ -439,16 +439,16 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
                 animate={isShaking ? { x: [0, -3, 3, -2, 0] } : { x: 0 }}
                 transition={{ duration: 0.25, ease: "easeInOut" }}
                 aria-disabled={item.isComingSoon}
-                className="group flex flex-col items-center gap-1.5"
+                className="group flex flex-col items-center"
               >
                 <div
-                  className={`flex h-[52px] w-[52px] items-center justify-center rounded-[13px] transition-transform duration-150 ${
+                  className={`flex h-[56px] w-[56px] min-[375px]:h-[60px] min-[375px]:w-[60px] items-center justify-center rounded-[16px] transition-transform duration-150 ${
                     item.isComingSoon ? "" : "group-active:scale-95"
                   } ${item.bgClass}`}
                 >
                   {item.icon}
                 </div>
-                <span className="text-center text-[10px] leading-tight font-normal text-neutral-600 dark:text-neutral-300">
+                <span className="mt-1.5 text-center text-[11px] leading-tight font-normal text-neutral-600 dark:text-neutral-300">
                   {item.mobileLabel}
                 </span>
               </motion.button>
@@ -461,7 +461,7 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
           className="my-3 h-[1px] w-full bg-black/10 dark:bg-white/20"
         />
 
-        <div className="grid grid-cols-4 gap-2.5">
+        <div className="flex items-center justify-center gap-3 min-[375px]:gap-3.5">
           {socialItems.map((item) => (
             <a
               key={item.id}
@@ -469,14 +469,14 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
               target={item.external ? "_blank" : undefined}
               rel={item.external ? "noopener noreferrer" : undefined}
               onClick={playTick}
-              className="group flex flex-col items-center gap-1.5"
+              className="group flex flex-col items-center"
             >
               <div
-                className={`flex h-[52px] w-[52px] items-center justify-center rounded-[13px] transition-transform duration-150 group-active:scale-95 ${item.bgClass}`}
+                className={`flex h-[56px] w-[56px] min-[375px]:h-[60px] min-[375px]:w-[60px] items-center justify-center rounded-[16px] transition-transform duration-150 group-active:scale-95 ${item.bgClass}`}
               >
                 {item.icon}
               </div>
-              <span className="text-center text-[10px] leading-tight font-normal text-neutral-600 dark:text-neutral-300">
+              <span className="mt-1.5 text-center text-[11px] leading-tight font-normal text-neutral-600 dark:text-neutral-300">
                 {item.mobileLabel}
               </span>
             </a>
