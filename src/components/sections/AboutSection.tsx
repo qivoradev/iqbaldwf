@@ -54,7 +54,14 @@ function GitHubMiniIcon() {
   );
 }
 
-const PARAGRAPHS_ID: { greeting: string; p1: TextSegment[]; p2: TextSegment[] } = {
+interface AboutContent {
+  greeting: string;
+  p1: TextSegment[];
+  p2: TextSegment[];
+  p3: TextSegment[];
+}
+
+const PARAGRAPHS_ID: AboutContent = {
   greeting: "Hai, terima kasih sudah mampir.",
   p1: [
     { text: "Saya Iqbal Dwi Fathonah, lulusan S1 Teknologi Informasi " },
@@ -74,9 +81,16 @@ const PARAGRAPHS_ID: { greeting: string; p1: TextSegment[]; p2: TextSegment[] } 
     { text: "Looker Studio", underline: true },
     { text: " untuk membantu pengambilan keputusan operasional." },
   ],
+  p3: [
+    { text: "Latar belakang " },
+    { text: "web development", underline: true },
+    {
+      text: " juga membantu saya memahami struktur produk digital sekaligus menyajikan hasil analisis dalam antarmuka yang rapi.",
+    },
+  ],
 };
 
-const PARAGRAPHS_EN: { greeting: string; p1: TextSegment[]; p2: TextSegment[] } = {
+const PARAGRAPHS_EN: AboutContent = {
   greeting: "Hey, glad you stopped by.",
   p1: [
     {
@@ -97,6 +111,13 @@ const PARAGRAPHS_EN: { greeting: string; p1: TextSegment[]; p2: TextSegment[] } 
     { text: ", and " },
     { text: "Looker Studio", underline: true },
     { text: " to support practical operational decisions." },
+  ],
+  p3: [
+    { text: "My background in " },
+    { text: "web development", underline: true },
+    {
+      text: " also helps me understand digital product architecture and present analytical work in clean interfaces.",
+    },
   ],
 };
 
@@ -157,13 +178,18 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
   const fullStream = useMemo(() => {
     const p1Text = content.p1.map((s) => s.text).join("");
     const p2Text = content.p2.map((s) => s.text).join("");
-    return `${content.greeting}\n${p1Text}\n${p2Text}`;
+    const p3Text = content.p3.map((s) => s.text).join("");
+    return `${content.greeting}\n${p1Text}\n${p2Text}\n${p3Text}`;
   }, [content]);
 
   const greetingLen = content.greeting.length;
   const p1Len = useMemo(
     () => content.p1.reduce((acc, s) => acc + s.text.length, 0),
     [content.p1]
+  );
+  const p2Len = useMemo(
+    () => content.p2.reduce((acc, s) => acc + s.text.length, 0),
+    [content.p2]
   );
 
   const [typedCount, setTypedCount] = useState<number>(0);
@@ -266,7 +292,14 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
   const activeCount = isDone ? fullStream.length : typedCount;
   const greetingBudget = Math.min(activeCount, greetingLen);
   const p1Budget = Math.max(0, Math.min(activeCount - greetingLen - 1, p1Len));
-  const p2Budget = Math.max(0, activeCount - greetingLen - 1 - p1Len - 1);
+  const p2Budget = Math.max(
+    0,
+    Math.min(activeCount - greetingLen - 1 - p1Len - 1, p2Len)
+  );
+  const p3Budget = Math.max(
+    0,
+    activeCount - greetingLen - 1 - p1Len - 1 - p2Len - 1
+  );
   const closeLabel = lang === "id" ? "Tutup" : "Close";
 
   return (
@@ -308,6 +341,11 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
         {/* Paragraph 2 */}
         {p2Budget > 0 && (
           <p>{renderSegmentsUpTo(content.p2, p2Budget, isTech, onSelectTrack)}</p>
+        )}
+
+        {/* Paragraph 3 */}
+        {p3Budget > 0 && (
+          <p>{renderSegmentsUpTo(content.p3, p3Budget, isTech, onSelectTrack)}</p>
         )}
 
         {/* Minimalist Certifications & Closing Block (Fade-in after typing completes) */}
