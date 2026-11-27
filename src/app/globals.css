@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --bg: #F6F6F5;
+  --surface: #FFFFFF;
+  --fg: #111111;
+  --muted: #666666;
+  --border: #E4E4E2;
+
+  --accent-brand: #259B52;
+  --track-data: #16A34A;
+  --track-frontend: #0A0A0A;
+  --track-lab: #EA580C;
+  --track-future: #8B5CF6;
+}
+
+.dark {
+  --bg: #050505;
+  --surface: #0F0F0F;
+  --fg: #F5F5F5;
+  --muted: #8E8E93;
+  --border: #1F1F1F;
+}
+
+@theme inline {
+  --color-canvas: var(--bg);
+  --color-surface: var(--surface);
+  --color-foreground: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--border);
+
+  --color-brand: var(--accent-brand);
+  --color-track-data: var(--track-data);
+  --color-track-frontend: var(--track-frontend);
+  --color-track-lab: var(--track-lab);
+  --color-track-future: var(--track-future);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--bg);
+  color: var(--fg);
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  transition: background-color 200ms ease, color 200ms ease;
+  overflow-x: hidden;
+}
+
+::selection {
+  background-color: var(--fg);
+  color: var(--bg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
