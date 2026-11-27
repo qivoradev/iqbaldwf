@@ -2,30 +2,24 @@ export interface MusicTrack {
   id: string;
   title: string;
   artist: string;
-  src: string;
+  youtubeId: string;
   cover: string;
 }
 
 /**
- * PANDUAN MENGGANTI LAGU & COVER:
- * 1. Masukkan file audio MP3 Anda ke dalam folder `public/music/`
- *    (misalnya `public/music/track-1.mp3` dan `public/music/track-2.mp3`).
- * 2. Gambar sampul piringan vinyl tersimpan di `public/music/vinyl-cover.jpg`.
- * 3. Ubah properti `title`, `artist`, `src`, atau `cover` pada array `MUSIC_PLAYLIST` di bawah ini.
+ * PANDUAN MENAMBAH ATAU MENGGANTI LAGU:
+ * 1. Untuk menambah lagu ke-2 (atau lebih), cukup salin format objek di bawah ini
+ *    dan masukkan `youtubeId` baru (bagian kode setelah `v=` pada URL YouTube).
+ * 2. Saat jumlah lagu lebih dari 1, indikator urutan (1/2) dan tombol ganti lagu
+ *    akan otomatis muncul pada MiniVinylPlayer.
+ * 3. Gambar sampul piringan tersimpan di `public/music/vinyl-cover.jpg`.
  */
 export const MUSIC_PLAYLIST: MusicTrack[] = [
   {
-    id: "track-1",
-    title: "Track 01",
-    artist: "Personal Playlist",
-    src: "/music/track-1.mp3",
-    cover: "/music/vinyl-cover.jpg",
-  },
-  {
-    id: "track-2",
-    title: "Track 02",
-    artist: "Personal Playlist",
-    src: "/music/track-2.mp3",
+    id: "cry-slowed-rain",
+    title: "Cry (slowed + rain)",
+    artist: "Cigarettes After Sex",
+    youtubeId: "Z9iThNdZpKY",
     cover: "/music/vinyl-cover.jpg",
   },
 ];
