@@ -15,6 +15,7 @@ interface DockTrackItem {
   label: string;
   mobileLabel: string;
   bgClass: string;
+  isComingSoon?: boolean;
   icon: React.ReactNode;
 }
 
@@ -123,10 +124,7 @@ function FrontendBlockSquircleSvg() {
   );
 }
 
-/**
- * 4. Web Lab (Coming Soon): Original Geometric Isometric Cube & Spark Prism
- * Replaces any brand letter with an original geometric lab symbol in full white on #F94D23.
- */
+/** 4. Web Lab (Coming Soon): Original Geometric Isometric Cube & Prism in full white on #F94D23 */
 function LabGeometricSquircleSvg() {
   return (
     <svg
@@ -135,19 +133,16 @@ function LabGeometricSquircleSvg() {
       aria-hidden="true"
       className="h-7.5 w-7.5 text-white"
     >
-      {/* Outer isometric hexagon cube in crisp white */}
       <path
         d="M16 4.5L26 10.25V21.75L16 27.5L6 21.75V10.25L16 4.5Z"
         stroke="currentColor"
         strokeWidth="2.2"
         strokeLinejoin="round"
       />
-      {/* Top face filled in solid white for high-contrast geometric weight */}
       <path
         d="M16 4.5L26 10.25L16 16L6 10.25L16 4.5Z"
         fill="currentColor"
       />
-      {/* Inner vertical prism edge */}
       <path
         d="M16 16V27.5"
         stroke="currentColor"
@@ -220,6 +215,7 @@ const DOCK_HOVER_SPRING = {
 
 export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [shakingId, setShakingId] = useState<string | null>(null);
   const { lang } = useLanguage();
   const { playTick } = useUiSound();
 
@@ -229,6 +225,7 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
       label: lang === "id" ? "Semua Karya" : "All Works",
       mobileLabel: lang === "id" ? "Semua" : "All",
       bgClass: "bg-[#FCD34D]",
+      isComingSoon: false,
       icon: <TerminalSquircleSvg />,
     },
     {
@@ -236,21 +233,24 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
       label: "Data Analyst",
       mobileLabel: "Data",
       bgClass: "bg-[#16A34A]",
+      isComingSoon: false,
       icon: <DataGlobeSquircleSvg />,
     },
     {
       id: "frontend",
-      label: lang === "id" ? "Web Dev · Segera Hadir" : "Web Dev · Soon",
-      mobileLabel: "Web Dev",
+      label: lang === "id" ? "Web Dev · Segera Hadir" : "Web Dev · Coming Soon",
+      mobileLabel: lang === "id" ? "Segera" : "Soon",
       bgClass:
         "bg-[#0A0A0A] dark:bg-[#141414] dark:ring-1 dark:ring-inset dark:ring-white/15",
+      isComingSoon: true,
       icon: <FrontendBlockSquircleSvg />,
     },
     {
       id: "lab",
-      label: lang === "id" ? "Web Lab · Segera Hadir" : "Web Lab · Soon",
-      mobileLabel: "Web Lab",
+      label: lang === "id" ? "Web Lab · Segera Hadir" : "Web Lab · Coming Soon",
+      mobileLabel: lang === "id" ? "Segera" : "Soon",
       bgClass: "bg-[#F94D23]",
+      isComingSoon: true,
       icon: <LabGeometricSquircleSvg />,
     },
   ];
@@ -286,6 +286,18 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
     },
   ];
 
+  const handleTrackItemClick = (item: DockTrackItem) => {
+    playTick();
+    if (item.isComingSoon) {
+      setShakingId(item.id);
+      window.setTimeout(() => {
+        setShakingId((prev) => (prev === item.id ? null : prev));
+      }, 260);
+      return;
+    }
+    onSelectTrack(item.id);
+  };
+
   return (
     <div className="mx-auto w-full max-w-[360px] md:w-fit md:max-w-none">
       {/* Desktop Horizontal Double-Bezel Glass Dock (>= md) */}
@@ -299,6 +311,7 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
         <div className="flex items-center gap-2">
           {trackItems.map((item) => {
             const isHovered = hoveredId === item.id;
+            const isShaking = shakingId === item.id;
 
             return (
               <div key={item.id} className="relative flex items-center">
@@ -319,10 +332,7 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
 
                 <motion.button
                   type="button"
-                  onClick={() => {
-                    playTick();
-                    onSelectTrack(item.id);
-                  }}
+                  onClick={() => handleTrackItemClick(item)}
                   onMouseEnter={() => {
                     setHoveredId(item.id);
                     playTick();
@@ -331,10 +341,16 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
                   onBlur={() =>
                     setHoveredId((prev) => (prev === item.id ? null : prev))
                   }
+                  animate={isShaking ? { x: [0, -3, 3, -2, 0] } : { x: 0 }}
                   whileHover={{ scale: 1.08, y: -3 }}
-                  whileTap={{ scale: 0.96 }}
-                  transition={DOCK_HOVER_SPRING}
+                  whileTap={item.isComingSoon ? undefined : { scale: 0.96 }}
+                  transition={
+                    isShaking
+                      ? { duration: 0.25, ease: "easeInOut" }
+                      : DOCK_HOVER_SPRING
+                  }
                   aria-label={item.label}
+                  aria-disabled={item.isComingSoon}
                   className={`flex h-[52px] w-[52px] items-center justify-center rounded-[13px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground ${item.bgClass}`}
                 >
                   {item.icon}
@@ -405,26 +421,31 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
         className="rounded-[22px] border border-black/[0.08] bg-white/80 p-3.5 shadow-[0_8px_30px_rgb(0,0,0,0.06)] ring-1 ring-white/60 backdrop-blur-xl md:hidden dark:border-white/[0.1] dark:bg-neutral-900/80 dark:ring-white/5"
       >
         <div className="grid grid-cols-4 gap-2.5">
-          {trackItems.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => {
-                playTick();
-                onSelectTrack(item.id);
-              }}
-              className="group flex flex-col items-center gap-1.5"
-            >
-              <div
-                className={`flex h-[52px] w-[52px] items-center justify-center rounded-[13px] transition-transform duration-150 group-active:scale-95 ${item.bgClass}`}
+          {trackItems.map((item) => {
+            const isShaking = shakingId === item.id;
+            return (
+              <motion.button
+                key={item.id}
+                type="button"
+                onClick={() => handleTrackItemClick(item)}
+                animate={isShaking ? { x: [0, -3, 3, -2, 0] } : { x: 0 }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
+                aria-disabled={item.isComingSoon}
+                className="group flex flex-col items-center gap-1.5"
               >
-                {item.icon}
-              </div>
-              <span className="text-center text-[10px] leading-tight font-normal text-neutral-600 dark:text-neutral-400">
-                {item.mobileLabel}
-              </span>
-            </button>
-          ))}
+                <div
+                  className={`flex h-[52px] w-[52px] items-center justify-center rounded-[13px] transition-transform duration-150 ${
+                    item.isComingSoon ? "" : "group-active:scale-95"
+                  } ${item.bgClass}`}
+                >
+                  {item.icon}
+                </div>
+                <span className="text-center text-[10px] leading-tight font-normal text-neutral-600 dark:text-neutral-400">
+                  {item.mobileLabel}
+                </span>
+              </motion.button>
+            );
+          })}
         </div>
 
         <div

@@ -8,16 +8,17 @@ interface TrackPageProps {
 }
 
 export function generateStaticParams() {
-  const allSlugs: { slug: string }[] = [];
+  const activeSlugs: { slug: string }[] = [];
   for (const track of TRACKS) {
-    allSlugs.push({ slug: track.slug });
+    if (track.isComingSoon) continue;
+    activeSlugs.push({ slug: track.slug });
     if (track.aliases) {
       for (const alias of track.aliases) {
-        allSlugs.push({ slug: alias });
+        activeSlugs.push({ slug: alias });
       }
     }
   }
-  return allSlugs;
+  return activeSlugs;
 }
 
 export async function generateMetadata({
@@ -26,7 +27,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const track = getTrackBySlug(slug);
 
-  if (!track) {
+  if (!track || track.isComingSoon) {
     return {
       title: "Track Not Found",
     };
@@ -42,7 +43,7 @@ export default async function TrackPage({ params }: TrackPageProps) {
   const { slug } = await params;
   const track = getTrackBySlug(slug);
 
-  if (!track) {
+  if (!track || track.isComingSoon) {
     notFound();
   }
 

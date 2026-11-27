@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { FilterTrackSlug, PROFILE, t } from "@/data/portfolio";
+import { FilterTrackSlug, PROFILE } from "@/data/portfolio";
 import { useLanguage } from "@/components/providers/AppProviders";
 import { SignatureDock } from "./SignatureDock";
 
@@ -13,7 +13,7 @@ function InlineLayersPlusGlyph() {
   return (
     <span
       aria-hidden="true"
-      className="mx-1.5 inline-flex items-center justify-center align-middle"
+      className="mx-2 inline-flex items-center justify-center align-middle"
     >
       <svg
         viewBox="0 0 36 36"
@@ -77,14 +77,16 @@ export function HeroSection({ onSelectTrack }: HeroSectionProps) {
         {PROFILE.name}
       </p>
 
-      {/* Headline: Strictly font-normal (weight 400), 2 balanced lines with inline icon */}
+      {/* Headline: Strictly font-normal (weight 400), 2 balanced lines with inline icon (mx-2) */}
       <h1 className="mt-6 text-[clamp(2rem,4.5vw,3.35rem)] leading-[1.12] font-normal tracking-[-0.03em] text-foreground">
         <span className="block">
-          {t(PROFILE.heroLine1Left, lang)}
+          Data analyst
           <InlineLayersPlusGlyph />
-          {t(PROFILE.heroLine1Right, lang)}
+          &amp;
         </span>
-        <span className="block">{t(PROFILE.heroLine2, lang)}</span>
+        <span className="block">
+          {lang === "id" ? "eksplorasi web" : "web enthusiast"}
+        </span>
       </h1>
 
       {/* Signature Squircle Dock */}
