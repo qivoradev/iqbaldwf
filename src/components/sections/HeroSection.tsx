@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { FilterTrackSlug, PROFILE } from "@/data/portfolio";
-import { useLanguage } from "@/components/providers/AppProviders";
 import { SignatureDock } from "./SignatureDock";
 
 interface HeroSectionProps {
@@ -50,8 +49,6 @@ function InlineSparkTrendGlyph() {
 }
 
 export function HeroSection({ onSelectTrack }: HeroSectionProps) {
-  const { lang } = useLanguage();
-
   return (
     <section
       aria-label="Introduction and portfolio dock"
@@ -81,9 +78,7 @@ export function HeroSection({ onSelectTrack }: HeroSectionProps) {
           <InlineSparkTrendGlyph />
           &amp;
         </span>
-        <span className="block">
-          {lang === "id" ? "eksplorasi web" : "web enthusiast"}
-        </span>
+        <span className="block">web developer</span>
       </h1>
 
       {/* Signature Squircle Dock */}
