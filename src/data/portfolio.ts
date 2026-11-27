@@ -232,8 +232,8 @@ export const PROJECTS: Project[] = [
       en: "Data Analyst",
     },
     summary: {
-      id: "Pembersihan data dengan SQL dan perancangan dashboard Looker Studio untuk memetakan tren PHK global 2020-2026.",
-      en: "SQL data cleaning and Looker Studio dashboard design to map global layoff trends from 2020 to 2026.",
+      id: "Pembersihan data dengan SQL dan perancangan dashboard Looker Studio untuk memetakan 947K+ karyawan terdampak PHK di 62 negara (2020-2026).",
+      en: "SQL data cleaning and Looker Studio dashboard design to map 947K+ laid-off employees across 62 countries (2020-2026).",
     },
     techStack: ["SQL (MySQL)", "Microsoft Excel", "Google Looker Studio"],
     kpis: [
@@ -285,8 +285,8 @@ export const PROJECTS: Project[] = [
       en: "Data Analyst",
     },
     summary: {
-      id: "Evaluasi omzet tahunan, jam sibuk operasional dapur, dan kontribusi tiap kategori menu pizza lewat dashboard Looker Studio.",
-      en: "Evaluating annual revenue, kitchen rush-hour patterns, and pizza menu category share with a Looker Studio dashboard.",
+      id: "Evaluasi omzet tahunan ($817K+ dari 21K+ pesanan), pola jam sibuk dapur, dan kontribusi kategori menu pizza lewat dashboard Looker Studio.",
+      en: "Evaluation of annual revenue ($817K+ across 21K+ orders), kitchen peak hours, and menu category performance via Looker Studio.",
     },
     techStack: ["Microsoft Excel", "Google Sheets", "Google Looker Studio"],
     kpis: [
@@ -341,8 +341,8 @@ export const PROJECTS: Project[] = [
       en: "Data Analyst",
     },
     summary: {
-      id: "Pemetaan wilayah rawan, jam puncak insiden, dan faktor penyebab utama kecelakaan lalu lintas di New York City periode 2021-2023 dengan Microsoft Excel.",
-      en: "Mapping borough hotspots, peak collision hours, and primary causes of New York City traffic accidents from 2021 to 2023 in Microsoft Excel.",
+      id: "Analisis 238K+ catatan kecelakaan lalu lintas New York City (2021-2023) dengan Microsoft Excel untuk memetakan wilayah rawan, jam puncak, dan penyebab utama insiden.",
+      en: "Analysis of 238K+ New York City collision records (2021-2023) in Microsoft Excel to map high-risk areas, peak hours, and primary causes.",
     },
     techStack: ["Microsoft Excel", "PivotTable", "Data Modeling"],
     kpis: [
