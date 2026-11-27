@@ -1,9 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { motion } from "motion/react";
-import { Mail } from "lucide-react";
-import { FilterTrackSlug, PROFILE } from "@/data/portfolio";
+import { AnimatePresence, motion } from "motion/react";
+import { ArrowUpRight, Mail, X } from "lucide-react";
+import {
+  CERTIFICATES,
+  CertificateItem,
+  FilterTrackSlug,
+  PROFILE,
+  t,
+} from "@/data/portfolio";
 import { useLanguage } from "@/components/providers/AppProviders";
 import { useUiSound } from "@/hooks/useUiSound";
 
@@ -154,6 +160,8 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
 
   const [typedCount, setTypedCount] = useState<number>(0);
   const [isDone, setIsDone] = useState<boolean>(false);
+  const [activeCertificate, setActiveCertificate] =
+    useState<CertificateItem | null>(null);
 
   const { playKeystroke, playTypewriterBell, playTick } = useUiSound();
   const playKeystrokeRef = useRef(playKeystroke);
@@ -166,7 +174,6 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
   }, [playKeystroke, playTypewriterBell]);
 
   const completeBySkip = useCallback(() => {
-    // Mark bell as already handled so skipping never rings the typewriter bell
     bellPlayedRef.current = true;
     setTypedCount(fullStream.length);
     setIsDone(true);
@@ -192,15 +199,14 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
     }
 
     const currentChar = fullStream[typedCount] ?? "";
-    // Rhythmic vintage typewriter cadence: 24–38ms per character
     let delay = 24 + Math.floor(Math.random() * 15);
 
     if (reducedMotion) {
       delay = 10;
     } else if (currentChar === "\n") {
-      delay = 220; // Natural paragraph transition pause
+      delay = 220;
     } else if (currentChar === "." || currentChar === ",") {
-      delay = 140; // Natural punctuation pause (140ms)
+      delay = 140;
     }
 
     const timer = window.setTimeout(() => {
@@ -229,7 +235,26 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
     return () => window.clearTimeout(timer);
   }, [typedCount, fullStream, isDone]);
 
-  // Calculate visible character budgets for Greeting, P1, and P2
+  // Handle Escape key for Certificate Lightbox Modal
+  useEffect(() => {
+    if (!activeCertificate) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        setActiveCertificate(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown, true);
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener("keydown", handleKeyDown, true);
+    };
+  }, [activeCertificate]);
+
   const activeCount = isDone ? fullStream.length : typedCount;
   const greetingBudget = Math.min(activeCount, greetingLen);
   const p1Budget = Math.max(0, Math.min(activeCount - greetingLen - 1, p1Len));
@@ -248,7 +273,7 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
         !isDone ? "cursor-pointer" : ""
       }`}
     >
-      {/* Top Greeting Line: warm, muted editorial tone */}
+      {/* Top Greeting Line */}
       <p className="mb-6 text-[15px] font-normal text-neutral-500 dark:text-neutral-400">
         {content.greeting.slice(0, greetingBudget)}
       </p>
@@ -264,56 +289,194 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
           <p>{renderSegmentsUpTo(content.p2, p2Budget, onSelectTrack)}</p>
         )}
 
-        {/* Minimalist Closing Block (Fade-in after typing completes) */}
+        {/* Minimalist Certifications & Closing Block (Fade-in after typing completes) */}
         {isDone && (
           <motion.div
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="pt-4"
+            className="space-y-8 pt-4"
           >
-            <p className="text-[15px] text-foreground">
-              {lang === "id" ? "Mari terhubung" : "Let's connect"}
-            </p>
+            {/* Minimalist 2-Row Certifications Section */}
+            <div>
+              <h2 className="font-mono text-xs tracking-wider text-neutral-500 uppercase">
+                {lang === "id" ? "Sertifikasi" : "Certifications"}
+              </h2>
 
-            <div className="mt-2.5 flex flex-wrap items-center gap-5 text-[14px]">
-              <a
-                href={PROFILE.linkedinUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                onMouseEnter={playTick}
-                className="inline-flex items-center gap-1.5 text-neutral-500 transition-colors hover:text-neutral-900 dark:hover:text-white"
-              >
-                <LinkedInMiniIcon />
-                <span>LinkedIn</span>
-              </a>
+              <div className="mt-2 border-t border-black/10 dark:border-white/10">
+                {CERTIFICATES.map((cert) => (
+                  <button
+                    key={cert.id}
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      playTick();
+                      setActiveCertificate(cert);
+                    }}
+                    onMouseEnter={playTick}
+                    className="group flex w-full items-center justify-between gap-4 border-b border-black/10 py-3 text-left transition-colors dark:border-white/10"
+                  >
+                    <div>
+                      <p className="text-[15px] font-normal text-foreground decoration-dotted underline-offset-4 group-hover:underline">
+                        {cert.title}
+                      </p>
+                      <p className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
+                        {cert.issuer}
+                      </p>
+                    </div>
 
-              <a
-                href={PROFILE.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                onMouseEnter={playTick}
-                className="inline-flex items-center gap-1.5 text-neutral-500 transition-colors hover:text-neutral-900 dark:hover:text-white"
-              >
-                <GitHubMiniIcon />
-                <span>GitHub</span>
-              </a>
+                    <div className="flex shrink-0 items-center gap-2.5 font-mono text-xs text-neutral-500 tabular-nums dark:text-neutral-400">
+                      <span>{t(cert.shortDate, lang)}</span>
+                      <span className="inline-flex items-center gap-0.5 text-foreground/80 transition-colors group-hover:text-foreground">
+                        <span>{lang === "id" ? "Lihat" : "View"}</span>
+                        <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
 
-              <a
-                href={`mailto:${PROFILE.email}`}
-                onClick={(e) => e.stopPropagation()}
-                onMouseEnter={playTick}
-                className="inline-flex items-center gap-1.5 text-neutral-500 transition-colors hover:text-neutral-900 dark:hover:text-white"
-              >
-                <Mail className="h-3.5 w-3.5" />
-                <span>Email</span>
-              </a>
+            {/* Minimalist Connect Row */}
+            <div>
+              <p className="text-[15px] text-foreground">
+                {lang === "id" ? "Mari terhubung" : "Let's connect"}
+              </p>
+
+              <div className="mt-2.5 flex flex-wrap items-center gap-5 text-[14px]">
+                <a
+                  href={PROFILE.linkedinUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  onMouseEnter={playTick}
+                  className="inline-flex items-center gap-1.5 text-neutral-500 transition-colors hover:text-neutral-900 dark:hover:text-white"
+                >
+                  <LinkedInMiniIcon />
+                  <span>LinkedIn</span>
+                </a>
+
+                <a
+                  href={PROFILE.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  onMouseEnter={playTick}
+                  className="inline-flex items-center gap-1.5 text-neutral-500 transition-colors hover:text-neutral-900 dark:hover:text-white"
+                >
+                  <GitHubMiniIcon />
+                  <span>GitHub</span>
+                </a>
+
+                <a
+                  href={`mailto:${PROFILE.email}`}
+                  onClick={(e) => e.stopPropagation()}
+                  onMouseEnter={playTick}
+                  className="inline-flex items-center gap-1.5 text-neutral-500 transition-colors hover:text-neutral-900 dark:hover:text-white"
+                >
+                  <Mail className="h-3.5 w-3.5" />
+                  <span>Email</span>
+                </a>
+              </div>
             </div>
           </motion.div>
         )}
       </div>
+
+      {/* Certificate Lightbox Modal (supports both Landscape & Portrait cleanly) */}
+      <AnimatePresence>
+        {activeCertificate && (
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={activeCertificate.title}
+            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
+          >
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setActiveCertificate(null)}
+              className="fixed inset-0 bg-black/65 backdrop-blur-sm dark:bg-black/80"
+            />
+
+            {/* Modal Container */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 8 }}
+              transition={{ type: "spring", bounce: 0, duration: 0.32 }}
+              className="relative z-10 flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-[22px] border border-black/10 bg-surface p-4 shadow-2xl sm:p-6 dark:border-white/10"
+            >
+              {/* Top Bar */}
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <h3 className="truncate text-sm font-medium text-foreground sm:text-base">
+                    {activeCertificate.title}
+                  </h3>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    playTick();
+                    setActiveCertificate(null);
+                  }}
+                  onMouseEnter={playTick}
+                  aria-label="Close certificate preview"
+                  className="inline-flex shrink-0 items-center gap-1 rounded-full border border-black/10 bg-canvas px-3 py-1 text-xs text-foreground transition-colors hover:border-black/30 dark:border-white/15 dark:hover:border-white/35"
+                >
+                  <X className="h-3.5 w-3.5" />
+                  <span>{lang === "id" ? "Tutup" : "Close"}</span>
+                </button>
+              </div>
+
+              {/* Certificate Image (Landscape & Portrait safe) */}
+              <div className="flex flex-1 items-center justify-center overflow-hidden rounded-xl border border-black/[0.08] bg-neutral-100 p-2 dark:border-white/[0.08] dark:bg-neutral-900">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={activeCertificate.image}
+                  alt={activeCertificate.title}
+                  className="max-h-[75vh] w-auto mx-auto object-contain rounded-lg"
+                />
+              </div>
+
+              {/* Metadata Footer */}
+              <div className="mt-4 flex flex-col justify-between gap-3 border-t border-black/[0.08] pt-3.5 text-xs sm:flex-row sm:items-center dark:border-white/[0.08]">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-muted">
+                  <span className="font-medium text-foreground">
+                    {activeCertificate.issuer}
+                  </span>
+                  <span>·</span>
+                  <span>{t(activeCertificate.fullDate, lang)}</span>
+                  <span>·</span>
+                  <span className="font-mono text-[11px] text-foreground">
+                    ID: {activeCertificate.credentialId}
+                  </span>
+                </div>
+
+                {activeCertificate.verifyUrl && (
+                  <a
+                    href={activeCertificate.verifyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onMouseEnter={playTick}
+                    className="inline-flex w-fit items-center gap-1 rounded-full border border-black/15 bg-canvas px-3 py-1 font-mono text-[11px] text-foreground transition-colors hover:border-black/35 dark:border-white/15 dark:hover:border-white/35"
+                  >
+                    <span>
+                      {lang === "id" ? "Verifikasi" : "Verify"}
+                    </span>
+                    <ArrowUpRight className="h-3 w-3" />
+                  </a>
+                )}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

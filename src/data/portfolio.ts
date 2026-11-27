@@ -22,10 +22,6 @@ export interface ProfileData {
   githubUsername: string;
   githubUrl: string;
   linkedinUrl: string;
-  heroLine1Left: LocalizedText;
-  heroLine1Right: LocalizedText;
-  heroLine2: LocalizedText;
-  aboutTypewriterIntro: LocalizedText;
 }
 
 export interface Track {
@@ -43,14 +39,9 @@ export interface Track {
   coreStack: string[];
 }
 
-export interface CaseStudyDetail {
-  problem: LocalizedText;
-  approach: LocalizedText;
-  keyInsights: {
-    id: string[];
-    en: string[];
-  };
-  outcome: LocalizedText;
+export interface ProjectKpi {
+  value: string;
+  label: LocalizedText;
 }
 
 export interface Project {
@@ -59,20 +50,33 @@ export interface Project {
   title: string;
   trackSlug: TrackSlug;
   year: string;
-  period: LocalizedText;
+  image: string;
   role: LocalizedText;
   summary: LocalizedText;
-  impactBadge: string;
   techStack: string[];
-  caseStudy: CaseStudyDetail;
+  kpis: ProjectKpi[];
+  keyInsights: {
+    id: string[];
+    en: string[];
+  };
+  recommendation?: LocalizedText;
   links: {
-    live?: string;
-    liveLabel?: LocalizedText;
-    github?: string;
-    artifact?: string;
-    artifactLabel?: LocalizedText;
+    liveDashboard?: string;
+    github: string;
   };
   featured: boolean;
+}
+
+export interface CertificateItem {
+  id: string;
+  title: string;
+  issuer: string;
+  shortDate: LocalizedText;
+  fullDate: LocalizedText;
+  credentialId: string;
+  verifyUrl?: string;
+  image: string;
+  orientation: "landscape" | "portrait";
 }
 
 export interface ActivityLog {
@@ -111,22 +115,6 @@ export const PROFILE: ProfileData = {
   githubUsername: "qivoradev",
   githubUrl: "https://github.com/qivoradev",
   linkedinUrl: "https://www.linkedin.com/in/iqbaldf",
-  heroLine1Left: {
-    id: "Analis data",
-    en: "Data analyst",
-  },
-  heroLine1Right: {
-    id: "& pengembang",
-    en: "& frontend",
-  },
-  heroLine2: {
-    id: "antarmuka web",
-    en: "web developer",
-  },
-  aboutTypewriterIntro: {
-    id: "Saya Iqbal Dwi Fathonah, lulusan baru S1 Teknologi Informasi 2026 dari Universitas Muhammadiyah Yogyakarta (UMY) yang berfokus mengubah dataset kompleks menjadi keputusan bisnis yang jernih dan terukur.",
-    en: "I’m Iqbal Dwi Fathonah, a 2026 Information Technology graduate from Universitas Muhammadiyah Yogyakarta (UMY) focused on turning complex datasets into clear, measurable business decisions.",
-  },
 };
 
 export const TRACKS: Track[] = [
@@ -155,17 +143,16 @@ export const TRACKS: Track[] = [
       en: "Transforming messy transactional and operational data into clear, actionable business intelligence.",
     },
     description: {
-      id: "Pembersihan data dengan SQL (CTE & Window Functions), pemodelan KPI di Microsoft Excel, dan perancangan dashboard interaktif di Google Looker Studio.",
-      en: "Data cleaning with SQL (CTEs & Window Functions), KPI modeling in Microsoft Excel, and interactive executive dashboards in Google Looker Studio.",
+      id: "Pembersihan data dengan SQL (MySQL), pemodelan KPI & PivotTable di Microsoft Excel, serta perancangan dashboard interaktif di Google Looker Studio.",
+      en: "Data cleaning with SQL (MySQL), KPI & PivotTable modeling in Microsoft Excel, and interactive executive dashboards in Google Looker Studio.",
     },
     accentHex: "#16A34A",
     coreStack: [
-      "SQL",
+      "SQL (MySQL)",
       "Microsoft Excel",
       "Google Looker Studio",
-      "Data Cleaning",
-      "Exploratory Data Analysis",
-      "KPI Dashboarding",
+      "PivotTable",
+      "Data Modeling",
     ],
   },
   {
@@ -177,12 +164,12 @@ export const TRACKS: Track[] = [
       en: "Web Dev",
     },
     shortLabel: {
-      id: "Web Dev",
-      en: "Web Dev",
+      id: "Segera",
+      en: "Soon",
     },
     dockTooltip: {
       id: "Web Dev · Segera Hadir",
-      en: "Web Dev · Soon",
+      en: "Web Dev · Coming Soon",
     },
     badgeLabel: {
       id: "Frontend & Web Dev · Segera Hadir",
@@ -193,12 +180,8 @@ export const TRACKS: Track[] = [
       en: "Web engineering case studies are currently being curated.",
     },
     description: {
-      id: "Jalur portofolio Web Development sedang disiapkan agar tampil dengan kedalaman studi kasus yang utuh. Saat ini fokus utama portofolio berada pada jalur Data Analyst.",
-      en: "The Web Development track is currently being prepared with full case study depth. At this time, my primary portfolio focus is on the Data Analyst track.",
-    },
-    comingSoonMessage: {
-      id: "Studi kasus pengembangan web sedang dalam tahap kurasi akhir. Sementara jalur ini disiapkan, fokus utama portofolio saya saat ini berada pada analisis data dan pemodelan bisnis di jalur Data Analyst.",
-      en: "Web development case studies are currently undergoing final curation. While this track is being prepared, my primary focus is on data analytics and business intelligence in the Data Analyst track.",
+      id: "Jalur portofolio Web Development sedang disiapkan. Saat ini fokus utama portofolio berada pada jalur Data Analyst.",
+      en: "The Web Development track is currently in preparation. At this time, my primary portfolio focus is on the Data Analyst track.",
     },
     accentHex: "#0A0A0A",
     coreStack: ["Next.js", "React", "TypeScript", "Tailwind CSS v4", "Supabase"],
@@ -212,12 +195,12 @@ export const TRACKS: Track[] = [
       en: "Web Lab",
     },
     shortLabel: {
-      id: "Web Lab",
-      en: "Web Lab",
+      id: "Segera",
+      en: "Soon",
     },
     dockTooltip: {
       id: "Web Lab · Segera Hadir",
-      en: "Web Lab · Soon",
+      en: "Web Lab · Coming Soon",
     },
     badgeLabel: {
       id: "Web Lab & Eksperimen · Segera Hadir",
@@ -228,12 +211,8 @@ export const TRACKS: Track[] = [
       en: "Technical experiments and QA Engineering sandbox are in preparation.",
     },
     description: {
-      id: "Ruang laboratorium untuk eksperimen QA Engineering dan perkakas web mikro sedang disiapkan. Saat ini fokus utama portofolio berada pada jalur Data Analyst.",
-      en: "This laboratory space for QA Engineering experiments and micro web tools is currently in preparation. Right now, my primary focus is on the Data Analyst track.",
-    },
-    comingSoonMessage: {
-      id: "Ruang eksperimen Web Lab & QA Engineering sedang disiapkan untuk dokumentasi publik. Saat ini fokus utama portofolio dan studi kasus saya berada pada jalur Data Analyst.",
-      en: "The Web Lab & QA Engineering sandbox is currently being prepared for public release. At present, my primary focus and published case studies are in the Data Analyst track.",
+      id: "Ruang laboratorium untuk eksperimen QA Engineering dan perkakas web mikro sedang disiapkan.",
+      en: "This laboratory space for QA Engineering experiments and micro web tools is currently in preparation.",
     },
     accentHex: "#F94D23",
     coreStack: ["QA Engineering", "Test Case Matrix", "Web Tools", "Automation"],
@@ -247,167 +226,195 @@ export const PROJECTS: Project[] = [
     title: "Global Layoffs Analysis (2020–2026)",
     trackSlug: "data-analyst",
     year: "2026",
-    period: {
-      id: "2026 · Studi Kasus SQL & BI End-to-End",
-      en: "2026 · End-to-End SQL & BI Case Study",
-    },
+    image: "/projects/global-layoffs.jpg",
     role: {
       id: "Data Analyst",
       en: "Data Analyst",
     },
     summary: {
-      id: "Pembersihan data berskala ribuan baris dan analisis tren PHK industri global lintas negara, tahapan pendanaan, dan sektor (2020–2026) menggunakan SQL, Excel, dan Looker Studio.",
-      en: "Multi-thousand-row data cleaning and exploratory trend analysis of global tech & corporate layoffs across countries, funding stages, and sectors (2020–2026) using SQL, Excel, and Looker Studio.",
+      id: "Analisis end-to-end pembersihan data SQL hingga dashboard interaktif Looker Studio untuk memetakan gelombang PHK global 2020–2026.",
+      en: "End-to-end SQL data cleaning and interactive Looker Studio dashboard mapping global layoff waves from 2020 to 2026.",
     },
-    impactBadge: "2,300+ Records Cleaned · Multi-Year Trend",
-    techStack: ["SQL", "Microsoft Excel", "Google Looker Studio"],
-    caseStudy: {
-      problem: {
-        id: "Dataset mentah pelacakan PHK global dari tahun 2020 hingga 2026 memiliki tingkat duplikasi baris yang tinggi, inkonsistensi penulisan nama perusahaan dan negara (mis. 'United States' vs 'United States.'), format tanggal bertipe teks, serta banyak nilai kosong pada kolom total_laid_off dan funds_raised_millions.",
-        en: "The raw global layoffs dataset spanning 2020–2026 suffered from duplicate entries, inconsistent company and country naming (e.g., 'United States' vs 'United States.'), text-formatted dates, and extensive null values across total_laid_off and funds_raised_millions.",
+    techStack: ["SQL (MySQL)", "Microsoft Excel", "Google Looker Studio"],
+    kpis: [
+      {
+        value: "947.449",
+        label: { id: "Total PHK", en: "Total Laid Off" },
       },
-      approach: {
-        id: "Membangun pipeline pembersihan bertahap di SQL menggunakan staging table, CTE dengan ROW_NUMBER() OVER(PARTITION BY ...) untuk menghapus duplikat secara presisi, trimming & standardisasi entitas geografi/industri, konversi tipe tanggal, serta perhitungan rolling total bulanan menggunakan Window Functions sebelum divisualisasikan di Microsoft Excel dan Google Looker Studio.",
-        en: "Built a staged SQL cleaning pipeline using staging tables, CTEs with ROW_NUMBER() OVER(PARTITION BY ...) for exact deduplication, string trimming & entity standardization, date casting, and monthly rolling total aggregations via Window Functions before modeling in Excel and visualizing in Google Looker Studio.",
+      {
+        value: "2.631",
+        label: { id: "Perusahaan", en: "Companies" },
       },
-      keyInsights: {
-        id: [
-          "Gelombang efisiensi terbesar terkonsentrasi pada sektor Consumer Tech, Retail, dan Finance pasca-ekspansi agresif 2021, dengan puncak koreksi pada 2023–2024 dan normalisasi bertahap hingga 2026.",
-          "Perusahaan berstatus Post-IPO menyumbang volume absolut PHK tertinggi, sedangkan startup fase awal (Seed–Series B) mengalami persentase pemangkasan tenaga kerja per entitas yang lebih tajam (sering mencapai 30%–100%).",
-          "Standardisasi SQL berhasil mengeliminasi ratusan entri duplikat dan menyatukan kategori industri yang terfragmentasi menjadi taksonomi analitik yang bersih.",
-        ],
-        en: [
-          "Workforce reductions were most heavily concentrated in Consumer Tech, Retail, and Finance following aggressive 2021 expansion, peaking during the 2023–2024 correction and gradually stabilizing through 2026.",
-          "Post-IPO enterprises accounted for the highest absolute layoff volume, whereas early-stage startups (Seed–Series B) experienced much steeper percentage cuts per company (often 30%–100%).",
-          "SQL standardization eliminated hundreds of duplicate rows and consolidated fragmented industry labels into a clean analytical taxonomy.",
-        ],
+      {
+        value: "39,86%",
+        label: { id: "Rata-rata % PHK", en: "Avg. Layoff %" },
       },
-      outcome: {
-        id: "Menghasilkan skrip SQL yang terdokumentasi penuh, workbook validasi Excel, dan dashboard interaktif Google Looker Studio yang memungkinkan pemfilteran dinamis berdasarkan rentang tahun, negara, sektor industri, dan tahapan pendanaan.",
-        en: "Delivered fully documented SQL transformation scripts, an Excel validation workbook, and an interactive Google Looker Studio dashboard enabling dynamic filtering by year, country, industry sector, and funding stage.",
+      {
+        value: "62",
+        label: { id: "Negara", en: "Countries" },
       },
+    ],
+    keyInsights: {
+      id: [
+        "Puncak restrukturisasi terjadi akhir 2022–awal 2023 (~90rb–100rb karyawan/bulan), dengan gelombang berulang 10rb–35rb/bulan di 2024–2026.",
+        "Amerika Serikat mendominasi 70,7% (670.039 karyawan), dengan Retail, Hardware, dan Consumer sebagai sektor paling terdampak.",
+        "Top 10 perusahaan (seluruhnya tahap Post-IPO, dipimpin Amazon 59.810 & Intel 43.167) menyumbang 29,9% total PHK global.",
+      ],
+      en: [
+        "Restructuring peaked in late 2022–early 2023 (~90k–100k employees/month), followed by recurring waves of 10k–35k/month across 2024–2026.",
+        "The United States accounted for 70.7% (670,039 employees), with Retail, Hardware, and Consumer as the hardest-hit sectors.",
+        "The top 10 companies (all Post-IPO, led by Amazon at 59,810 & Intel at 43,167) represented 29.9% of total global layoffs.",
+      ],
     },
     links: {
-      artifact: "https://lookerstudio.google.com/",
-      artifactLabel: {
-        id: "Dashboard Looker Studio",
-        en: "Looker Studio Dashboard",
-      },
-      github: "https://github.com/qivoradev",
+      liveDashboard:
+        "https://datastudio.google.com/reporting/9951d45c-28b4-42a9-81f2-cefb0c635cb8",
+      github: "https://github.com/qivoradev/global-layoffs-analysis-2020-2026",
     },
     featured: true,
   },
   {
     id: "proj-pizza-sales",
-    slug: "pizza-sales-performance-analytics",
+    slug: "pizza-sales-performance-dashboard",
     title: "Pizza Sales Performance & Operational Analytics Dashboard",
     trackSlug: "data-analyst",
-    year: "2025",
-    period: {
-      id: "2025–2026 · Analitik Operasional & Ritel",
-      en: "2025–2026 · Retail & Operations Analytics",
-    },
+    year: "2026",
+    image: "/projects/pizza-sales.png",
     role: {
       id: "Data Analyst",
       en: "Data Analyst",
     },
     summary: {
-      id: "Evaluasi kinerja penjualan tahunan, pola jam sibuk pesanan, dan kontribusi margin menu dari 48.620 baris transaksi untuk mengoptimalkan kapasitas dapur dan promosi gerai.",
-      en: "Annual sales performance evaluation, peak-hour order distribution, and menu revenue contribution across 48,620 order lines to optimize kitchen staffing and promotional bundling.",
+      id: "Dashboard BI interaktif untuk mengevaluasi omzet tahunan, pola jam sibuk dapur, dan kontribusi kategori menu pizza.",
+      en: "Interactive BI dashboard evaluating annual revenue, kitchen rush-hour patterns, and pizza menu category contribution.",
     },
-    impactBadge: "48,620 Order Lines · Operational KPI",
-    techStack: ["SQL", "Microsoft Excel", "Google Looker Studio"],
-    caseStudy: {
-      problem: {
-        id: "Manajemen operasional membutuhkan visibilitas yang jelas dari puluhan ribu baris transaksi tahunan untuk menjawab kapan jam sibuk dapur terjadi, ukuran dan kategori pizza mana yang paling mendominasi pendapatan, serta menu mana yang berkinerja rendah.",
-        en: "Store operations needed clear visibility across tens of thousands of annual transaction rows to identify kitchen rush hours, top revenue-generating pizza sizes and categories, and underperforming SKUs.",
+    techStack: ["Microsoft Excel", "Google Sheets", "Google Looker Studio"],
+    kpis: [
+      {
+        value: "$817.860,05",
+        label: { id: "Total Revenue", en: "Total Revenue" },
       },
-      approach: {
-        id: "Mengekstrak metrik inti (Total Revenue, Average Order Value, Total Pizzas Sold, Total Orders, Average Pizzas per Order) menggunakan agregasi SQL, melakukan tabulasi silang jam dan hari pesanan di Microsoft Excel, lalu membangun dashboard pemantauan operasional di Google Looker Studio.",
-        en: "Extracted core KPIs (Total Revenue, Average Order Value, Total Pizzas Sold, Total Orders, Average Pizzas per Order) via SQL aggregations, built hourly and day-of-week pivot models in Microsoft Excel, and designed an operational dashboard in Google Looker Studio.",
+      {
+        value: "49.574",
+        label: { id: "Pizza Terjual", en: "Pizzas Sold" },
       },
-      keyInsights: {
-        id: [
-          "Lonjakan pesanan paling padat terjadi pada jam makan siang (12:00–13:00) dan jam makan malam (17:00–19:00), dengan volume puncak pada hari Kamis, Jumat, dan Sabtu.",
-          "Kategori Classic menyumbang jumlah pesanan dan kuantitas terjual tertinggi, sementara ukuran Large (L) memberikan kontribusi pendapatan paling signifikan terhadap Average Order Value.",
-          "Teridentifikasi 5 SKU dengan kontribusi pendapatan terendah yang menjadi kandidat kuat untuk evaluasi ulang bahan baku atau bundling promosi.",
-        ],
-        en: [
-          "Order volume spikes sharply during lunch (12:00–13:00) and dinner rush windows (17:00–19:00), with peak weekly demand on Thursdays, Fridays, and Saturdays.",
-          "The Classic category drives the highest total orders and units sold, while Large (L) pizzas contribute the largest share of overall revenue and lift Average Order Value.",
-          "Identified 5 bottom-performing SKUs that represent prime candidates for menu rationalization or promotional bundling.",
-        ],
+      {
+        value: "21.350",
+        label: { id: "Total Orders", en: "Total Orders" },
       },
-      outcome: {
-        id: "Memberikan panduan berbasis data untuk penjadwalan staf dapur pada jam puncak serta rekomendasi penataan ulang promosi menu guna mendongkrak nilai rata-rata transaksi.",
-        en: "Provided data-backed guidance for peak-hour kitchen shift scheduling and menu promotion adjustments to increase average transaction value.",
+      {
+        value: "$38,31",
+        label: { id: "AOV", en: "Avg. Order Value" },
       },
+    ],
+    keyInsights: {
+      id: [
+        "Pola beban kerja ganda setiap hari: puncak makan siang (12.00–13.00, ~2.500 order/jam) & makan malam (17.00–18.00), dengan penurunan sore pukul 14.00–16.00.",
+        "Distribusi kategori sehat dan merata: Classic (26,9%), Supreme (25,5%), Chicken (24,0%), dan Veggie (23,7%).",
+        "Tiga menu penyumbang omzet tertinggi semuanya berbasis ayam (dipimpin The Thai Chicken Pizza $43.434,25)—krusial untuk menjaga safety stock bahan baku.",
+      ],
+      en: [
+        "Dual daily workload peaks: lunch rush (12:00–13:00, ~2,500 orders/hr) and dinner rush (17:00–18:00), with an afternoon lull from 14:00–16:00.",
+        "Balanced category share across the menu: Classic (26.9%), Supreme (25.5%), Chicken (24.0%), and Veggie (23.7%).",
+        "All top three revenue-generating pizzas are chicken-based (led by The Thai Chicken Pizza at $43,434.25)—critical for raw ingredient safety stock.",
+      ],
+    },
+    recommendation: {
+      id: "Staggered shift staf di jam puncak, promo bundling jam sore (14.00–16.00), dan safety stock fillet ayam & saus utama.",
+      en: "Staggered kitchen shifts during peak hours, afternoon bundling promos (14:00–16:00), and safety stock for chicken fillet & core sauces.",
     },
     links: {
-      artifact: "https://lookerstudio.google.com/",
-      artifactLabel: {
-        id: "Laporan Looker Studio",
-        en: "Looker Studio Report",
-      },
-      github: "https://github.com/qivoradev",
+      liveDashboard: "", // TODO: isi link Looker Studio Pizza Sales
+      github: "https://github.com/qivoradev/pizza-sales-performance-dashboard",
     },
     featured: true,
   },
   {
     id: "proj-nyc-traffic",
-    slug: "nyc-traffic-safety-analysis-2021-2023",
-    title: "NYC Traffic Safety Analysis (2021–2023)",
+    slug: "nyc-traffic-collision-analysis",
+    title: "NYC Traffic Safety & Collision Analysis Dashboard",
     trackSlug: "data-analyst",
-    year: "2025",
-    period: {
-      id: "2025 · Analisis Data Keselamatan Publik",
-      en: "2025 · Public Safety Data Analysis",
-    },
+    year: "2026",
+    image: "/projects/nyc-traffic.png",
     role: {
       id: "Data Analyst",
       en: "Data Analyst",
     },
     summary: {
-      id: "Investigasi multi-tahun terhadap insiden kecelakaan lalu lintas di lima wilayah New York City (2021–2023) untuk memetakan titik waktu rawan, faktor penyebab utama, dan risiko bagi pejalan kaki.",
-      en: "Multi-year investigation of motor vehicle collisions across New York City's five boroughs (2021–2023) mapping high-risk time windows, primary contributing factors, and vulnerable road user impact.",
+      id: "Dashboard Excel interaktif (2021–2023) untuk memetakan titik rawan wilayah, waktu puncak, dan akar penyebab kecelakaan lalu lintas di NYC.",
+      en: "Interactive Excel dashboard (2021–2023) mapping borough hotspots, peak collision hours, and root causes of NYC traffic accidents.",
     },
-    impactBadge: "5 NYC Boroughs · 3-Year Collision Study",
-    techStack: ["SQL", "Microsoft Excel", "Google Looker Studio"],
-    caseStudy: {
-      problem: {
-        id: "Data insiden tabrakan kendaraan bermotor di New York City selama periode 2021–2023 mencakup ratusan ribu catatan dengan klasifikasi penyebab dan kategori korban (pejalan kaki, pesepeda, pengendara) yang perlu distandardisasi sebelum dapat ditarik kesimpulan kebijakan keselamatan.",
-        en: "New York City collision records from 2021–2023 contain hundreds of thousands of incident logs with varied contributing factor codes and victim classifications (pedestrians, cyclists, motorists) requiring standardization before policy insights can be drawn.",
+    techStack: ["Microsoft Excel", "PivotTable", "Data Modeling"],
+    kpis: [
+      {
+        value: "238.421",
+        label: { id: "Total Kasus", en: "Total Collisions" },
       },
-      approach: {
-        id: "Menggunakan SQL untuk menyaring catatan tidak lengkap dan mengelompokkan tingkat keparahan cedera serta kematian per borough, dilanjutkan dengan analisis distribusi jam/musiman di Microsoft Excel dan penyusunan peta ringkasan visual di Google Looker Studio.",
-        en: "Used SQL to filter incomplete records and aggregate injury/fatality severity by borough, followed by hourly and seasonal distribution modeling in Microsoft Excel and visual dashboarding in Google Looker Studio.",
+      {
+        value: "116.227",
+        label: { id: "Korban Luka", en: "Total Injured" },
       },
-      keyInsights: {
-        id: [
-          "Brooklyn dan Queens mencatat volume kecelakaan tertinggi secara keseluruhan, berkorelasi erat dengan kepadatan jaringan jalan arteri dan volume komuter.",
-          "Rentang waktu pukul 15:00–18:00 merupakan jendela risiko tertinggi untuk insiden yang melibatkan cedera korban, terutama pada hari kerja.",
-          "Driver Inattention/Distraction dan Failure to Yield Right-of-Way secara konsisten menjadi dua faktor kontributor teratas pada insiden yang melibatkan pejalan kaki dan pesepeda.",
-        ],
-        en: [
-          "Brooklyn and Queens recorded the highest total collision volume, correlating strongly with arterial road density and commuter traffic.",
-          "The 15:00–18:00 afternoon commute window represents the highest-risk period for injury-producing collisions, particularly on weekdays.",
-          "Driver Inattention/Distraction and Failure to Yield Right-of-Way consistently ranked as the top two contributing factors in collisions involving pedestrians and cyclists.",
-        ],
+      {
+        value: "268",
+        label: { id: "Meninggal", en: "Fatalities" },
       },
-      outcome: {
-        id: "Menyajikan dashboard analitik keselamatan publik yang merangkum pola bahaya berdasarkan lokasi, waktu, dan perilaku mengemudi secara ringkas dan mudah dipahami.",
-        en: "Delivered a public safety analytics dashboard summarizing hazard patterns by borough, time of day, and driver behavior in an accessible executive format.",
+      {
+        value: "48,7%",
+        label: { id: "Rasio Cedera", en: "Injury Rate" },
       },
+    ],
+    keyInsights: {
+      id: [
+        "Brooklyn (76.416 kasus / 32%) dan Queens (63.751) menyumbang hampir 59% dari seluruh kecelakaan di kota.",
+        "Insiden memuncak secara musiman di bulan Maret (25.099 kasus) dan secara harian pada jam pulang kerja sore (16.00–17.00).",
+        "Kelalaian pengemudi (Driver Inattention/Distraction) menjadi penyebab utama dengan 58.308 kasus (±25% dari total insiden).",
+      ],
+      en: [
+        "Brooklyn (76,416 cases / 32%) and Queens (63,751) account for nearly 59% of all citywide collisions.",
+        "Incidents peak seasonally in March (25,099 cases) and daily during the late-afternoon commute (16:00–17:00).",
+        "Driver Inattention/Distraction is the leading root cause with 58,308 cases (~25% of total collisions).",
+      ],
     },
     links: {
-      artifact: "https://lookerstudio.google.com/",
-      artifactLabel: {
-        id: "Analisis Looker Studio",
-        en: "Looker Studio Analysis",
-      },
-      github: "https://github.com/qivoradev",
+      github: "https://github.com/qivoradev/nyc-traffic-collision-analysis",
     },
     featured: false,
+  },
+];
+
+export const CERTIFICATES: CertificateItem[] = [
+  {
+    id: "cert-it-specialist-ai",
+    title: "IT Specialist — Artificial Intelligence",
+    issuer: "Certiport · CertNexus · Pearson",
+    shortDate: {
+      id: "Jun 2026",
+      en: "Jun 2026",
+    },
+    fullDate: {
+      id: "18 Juni 2026",
+      en: "June 18, 2026",
+    },
+    credentialId: "hd9z-4wLu",
+    verifyUrl: "https://verify.certiport.com",
+    image: "/certificates/cert-ai.jpg",
+    orientation: "landscape",
+  },
+  {
+    id: "cert-bnsp-cwdev",
+    title: "Certified Web Developer (CWDev)",
+    issuer: "BNSP · LSP Informatika",
+    shortDate: {
+      id: "Mar 2026",
+      en: "Mar 2026",
+    },
+    fullDate: {
+      id: "17 Maret 2026",
+      en: "March 17, 2026",
+    },
+    credentialId: "TIK.317.00540 2026",
+    image: "/certificates/cert-cwdev.png",
+    orientation: "portrait",
   },
 ];
 
@@ -418,12 +425,12 @@ export const ACTIVITY_LOGS: ActivityLog[] = [
     trackSlug: "data-analyst",
     category: "release",
     title: {
-      id: "Merilis Personal Portfolio Hub (iqbaldf) dengan fokus utama studi kasus Data Analyst",
-      en: "Launched Personal Portfolio Hub (iqbaldf) highlighting end-to-end Data Analyst case studies",
+      id: "Publikasi studi kasus Global Layoffs Analysis (2020–2026) — 947.449 karyawan terdampak di 62 negara",
+      en: "Published Global Layoffs Analysis (2020–2026) case study — 947,449 affected employees across 62 countries",
     },
     description: {
-      id: "Menyajikan studi kasus SQL, Microsoft Excel, dan Google Looker Studio dalam antarmuka editorial monokrom dua bahasa (ID/EN).",
-      en: "Presenting SQL, Microsoft Excel, and Google Looker Studio case studies inside a bilingual (ID/EN) monochrome editorial hub.",
+      id: "Pembersihan data dengan MySQL dan visualisasi dashboard interaktif di Google Looker Studio.",
+      en: "End-to-end data cleaning in MySQL and interactive dashboarding in Google Looker Studio.",
     },
   },
   {
@@ -432,12 +439,12 @@ export const ACTIVITY_LOGS: ActivityLog[] = [
     trackSlug: "data-analyst",
     category: "research",
     title: {
-      id: "Finalisasi studi kasus Global Layoffs Analysis (2020–2026) dengan SQL & Looker Studio",
-      en: "Finalized Global Layoffs Analysis (2020–2026) using SQL Window Functions & Looker Studio",
+      id: "Analisis operasional Pizza Sales Performance Dashboard ($817.860,05 revenue & 21.350 orders)",
+      en: "Completed Pizza Sales Performance operational BI dashboard ($817,860.05 revenue & 21,350 orders)",
     },
     description: {
-      id: "Standardisasi 2.300+ catatan perusahaan global menggunakan SQL CTE & Window Functions serta publikasi dashboard tren lintas sektor.",
-      en: "Standardized 2,300+ global company records using SQL CTEs & Window Functions and published an interactive cross-sector dashboard.",
+      id: "Identifikasi pola beban kerja ganda dapur dan rekomendasi safety stock bahan baku utama.",
+      en: "Identified dual daily rush-hour peaks and raw ingredient safety stock recommendations.",
     },
   },
   {
@@ -446,12 +453,12 @@ export const ACTIVITY_LOGS: ActivityLog[] = [
     trackSlug: "data-analyst",
     category: "milestone",
     title: {
-      id: "Penyusunan dashboard KPI operasional Pizza Sales & analisis keselamatan lalu lintas NYC",
-      en: "Completed Pizza Sales operational KPI dashboard & NYC Traffic Safety collision study",
+      id: "Pemodelan NYC Traffic Safety & Collision Analysis (238.421 insiden di 5 wilayah NYC)",
+      en: "Built NYC Traffic Safety & Collision Analysis dashboard (238,421 collisions across 5 NYC boroughs)",
     },
     description: {
-      id: "Pemodelan 48.620 baris transaksi ritel serta pemetaan faktor risiko kecelakaan di lima wilayah New York City.",
-      en: "Modeled 48,620 retail order lines and mapped collision risk factors across New York City's five boroughs.",
+      id: "Dashboard Excel interaktif menggunakan PivotTable dan Data Modeling untuk pemetaan jam rawan dan faktor risiko.",
+      en: "Interactive Excel dashboard using PivotTables and Data Modeling to map peak hours and contributing factors.",
     },
   },
 ];
