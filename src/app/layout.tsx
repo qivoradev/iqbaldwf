@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { AppProviders } from "@/components/providers/AppProviders";
 import { CustomCursor } from "@/components/ui/CustomCursor";
+import { MiniVinylPlayer } from "@/components/MiniVinylPlayer";
 import { PROFILE } from "@/data/portfolio";
 import "./globals.css";
 
@@ -21,28 +22,26 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: `${PROFILE.name} (${PROFILE.handle}) — Data Analyst & Frontend Web Developer`,
+    default: `${PROFILE.name} (${PROFILE.handle}) — Data Analyst & Web Enthusiast`,
     template: `%s · ${PROFILE.name} (${PROFILE.handle})`,
   },
   description:
-    "Personal Portfolio Hub Iqbal Dwi Fathonah (iqbaldf), Fresh Graduate S1 Teknologi Informasi 2026 Universitas Muhammadiyah Yogyakarta. Data Analyst (SQL, Excel, Looker Studio) & Frontend Web Developer (Next.js, TypeScript, Tailwind CSS).",
+    "Personal Portfolio Hub Iqbal Dwi Fathonah (iqbaldf), Fresh Graduate S1 Teknologi Informasi 2026 Universitas Muhammadiyah Yogyakarta. Data Analyst (SQL, Excel, Looker Studio).",
   keywords: [
     "Iqbal Dwi Fathonah",
     "iqbaldf",
     "qivoradev",
     "Data Analyst Indonesia",
-    "Frontend Web Developer",
     "Universitas Muhammadiyah Yogyakarta",
-    "JagoSel",
     "SQL",
     "Looker Studio",
-    "Next.js",
+    "Microsoft Excel",
   ],
   authors: [{ name: PROFILE.name }],
   openGraph: {
     title: `${PROFILE.name} (${PROFILE.handle}) — Personal Portfolio Hub`,
     description:
-      "Multi-Track Portfolio Hub: Data Analytics, Frontend Web Engineering & Experimental Web Lab.",
+      "Data Analyst Portfolio Hub: SQL, Microsoft Excel & Google Looker Studio Case Studies.",
     type: "website",
     locale: "id_ID",
   },
@@ -80,6 +79,7 @@ export default function RootLayout({
         <AppProviders>
           <CustomCursor />
           {children}
+          <MiniVinylPlayer />
         </AppProviders>
       </body>
     </html>

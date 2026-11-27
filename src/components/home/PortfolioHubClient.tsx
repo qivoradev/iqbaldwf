@@ -117,8 +117,8 @@ export function PortfolioHubClient() {
         </AnimatePresence>
       </main>
 
-      {/* Bottom symmetric spacer so Home Hero stays optically centered */}
-      <div aria-hidden="true" className="h-10 shrink-0" />
+      {/* Bottom symmetric spacer (extra clearance on mobile for MiniVinylPlayer) */}
+      <div aria-hidden="true" className="h-16 shrink-0 sm:h-10" />
     </div>
   );
 }
