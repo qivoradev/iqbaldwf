@@ -240,8 +240,9 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
       id: "frontend",
       label: lang === "id" ? "Web Dev · Segera Hadir" : "Web Dev · Coming Soon",
       mobileLabel: lang === "id" ? "Segera" : "Soon",
+      // Deep #0A0A0A contrasts cleanly against elevated graphite #2C2C2E dock in dark mode
       bgClass:
-        "bg-[#0A0A0A] dark:bg-[#141414] dark:ring-1 dark:ring-inset dark:ring-white/15",
+        "bg-[#0A0A0A] dark:bg-[#0A0A0A] ring-1 ring-inset ring-black/15 dark:ring-white/[0.08] shadow-xs",
       isComingSoon: true,
       icon: <FrontendBlockSquircleSvg />,
     },
@@ -271,8 +272,9 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
       mobileLabel: "GitHub",
       href: PROFILE.githubUrl,
       external: true,
+      // Rich dark slate contrasts clearly against #2C2C2E graphite dock surface
       bgClass:
-        "bg-[#181717] dark:bg-[#242424] dark:ring-1 dark:ring-inset dark:ring-white/12",
+        "bg-[#181717] dark:bg-[#141416] ring-1 ring-inset ring-black/15 dark:ring-white/[0.1] shadow-xs",
       icon: <GitHubSquircleSvg />,
     },
     {
@@ -300,12 +302,12 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
 
   return (
     <div className="mx-auto w-full max-w-[360px] md:w-fit md:max-w-none">
-      {/* Desktop Horizontal Double-Bezel Glass Dock (>= md) */}
+      {/* Desktop Horizontal Double-Bezel Glass/Graphite Dock (>= md) */}
       <div
         role="toolbar"
         aria-label="Portfolio tracks and direct social links"
         onMouseLeave={() => setHoveredId(null)}
-        className="hidden md:flex md:items-center md:gap-2 md:rounded-[22px] md:border md:border-black/[0.08] md:bg-white/75 md:p-2 md:shadow-[0_8px_30px_rgb(0,0,0,0.06)] md:ring-1 md:ring-white/60 md:backdrop-blur-xl dark:md:border-white/[0.1] dark:md:bg-neutral-900/75 dark:md:shadow-[0_12px_36px_rgb(0,0,0,0.55)] dark:md:ring-white/5"
+        className="hidden md:flex md:items-center md:gap-2 md:rounded-[22px] md:border md:border-black/[0.08] md:bg-white/75 md:p-2 md:shadow-[0_8px_30px_rgb(0,0,0,0.06)] md:ring-1 md:ring-inset md:ring-white/60 md:backdrop-blur-xl dark:md:border dark:md:border-white/[0.16] dark:md:bg-[#2C2C2E]/95 dark:md:shadow-[0_12px_36px_rgba(0,0,0,0.65)] dark:md:ring-1 dark:md:ring-inset dark:md:ring-white/[0.08]"
       >
         {/* Left: Portfolio Tracks */}
         <div className="flex items-center gap-2">
@@ -360,10 +362,10 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
           })}
         </div>
 
-        {/* Thin Vertical Divider */}
+        {/* Thin Vertical Divider: crisp visibility on both Light and Dark (#2C2C2E) */}
         <div
           aria-hidden="true"
-          className="mx-1.5 h-8 w-[1px] shrink-0 bg-black/10 dark:bg-white/15"
+          className="mx-1.5 h-8 w-[1px] shrink-0 bg-black/10 dark:bg-white/25"
         />
 
         {/* Right: Direct Social & Email */}
@@ -418,7 +420,7 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
       <div
         role="toolbar"
         aria-label="Mobile portfolio tracks and social links"
-        className="rounded-[22px] border border-black/[0.08] bg-white/80 p-3.5 shadow-[0_8px_30px_rgb(0,0,0,0.06)] ring-1 ring-white/60 backdrop-blur-xl md:hidden dark:border-white/[0.1] dark:bg-neutral-900/80 dark:ring-white/5"
+        className="rounded-[22px] border border-black/[0.08] bg-white/80 p-3.5 shadow-[0_8px_30px_rgb(0,0,0,0.06)] ring-1 ring-inset ring-white/60 backdrop-blur-xl md:hidden dark:border dark:border-white/[0.16] dark:bg-[#2C2C2E]/95 dark:shadow-[0_12px_36px_rgba(0,0,0,0.65)] dark:ring-1 dark:ring-inset dark:ring-white/[0.08]"
       >
         <div className="grid grid-cols-4 gap-2.5">
           {trackItems.map((item) => {
@@ -440,7 +442,7 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
                 >
                   {item.icon}
                 </div>
-                <span className="text-center text-[10px] leading-tight font-normal text-neutral-600 dark:text-neutral-400">
+                <span className="text-center text-[10px] leading-tight font-normal text-neutral-600 dark:text-neutral-300">
                   {item.mobileLabel}
                 </span>
               </motion.button>
@@ -450,7 +452,7 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
 
         <div
           aria-hidden="true"
-          className="my-3 h-[1px] w-full bg-black/10 dark:bg-white/10"
+          className="my-3 h-[1px] w-full bg-black/10 dark:bg-white/20"
         />
 
         <div className="grid grid-cols-4 gap-2.5">
@@ -468,7 +470,7 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
               >
                 {item.icon}
               </div>
-              <span className="text-center text-[10px] leading-tight font-normal text-neutral-600 dark:text-neutral-400">
+              <span className="text-center text-[10px] leading-tight font-normal text-neutral-600 dark:text-neutral-300">
                 {item.mobileLabel}
               </span>
             </a>

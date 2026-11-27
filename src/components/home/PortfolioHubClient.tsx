@@ -37,7 +37,6 @@ export function PortfolioHubClient() {
   useEffect(() => {
     if (view.type === "home") return;
     const onKeyDown = (e: KeyboardEvent) => {
-      // Do not override Escape if a dialog modal is currently open
       if (e.key === "Escape" && !document.querySelector('[role="dialog"]')) {
         setView({ type: "home" });
       }
@@ -59,8 +58,12 @@ export function PortfolioHubClient() {
         onBack={handleBackToHome}
       />
 
-      {/* Centered Single-Screen Viewport with Native-Feel Blur + Y Transition */}
-      <main className="flex flex-1 flex-col items-center justify-center py-6">
+      {/* Home is vertically centered; About & Track views start comfortably from the top */}
+      <main
+        className={`flex flex-1 flex-col items-center ${
+          view.type === "home" ? "justify-center py-6" : "justify-start"
+        }`}
+      >
         <AnimatePresence mode="wait">
           {view.type === "home" && (
             <motion.div

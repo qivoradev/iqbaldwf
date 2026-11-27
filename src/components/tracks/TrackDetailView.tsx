@@ -25,7 +25,7 @@ export function TrackDetailView({ track }: TrackDetailViewProps) {
     <div className="min-h-dvh flex flex-col justify-between bg-canvas text-foreground">
       <TopPillNavbar backHref="/" />
 
-      <main className="flex flex-1 flex-col items-center justify-center py-6">
+      <main className="flex flex-1 flex-col items-center justify-start py-6">
         <motion.div
           initial={{ opacity: 0, filter: "blur(4px)", y: 8 }}
           animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
