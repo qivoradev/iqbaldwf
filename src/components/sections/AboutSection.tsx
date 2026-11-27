@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowUpRight, Mail, X } from "lucide-react";
 import {
@@ -10,7 +11,7 @@ import {
   PROFILE,
   t,
 } from "@/data/portfolio";
-import { useLanguage } from "@/components/providers/AppProviders";
+import { useLanguage, useTheme } from "@/components/providers/AppProviders";
 import { useUiSound } from "@/hooks/useUiSound";
 
 interface AboutSectionProps {
@@ -143,9 +144,9 @@ function renderSegmentsUpTo(
 
 export function AboutSection({ onSelectTrack }: AboutSectionProps) {
   const { lang } = useLanguage();
+  const { mounted } = useTheme();
   const content = lang === "id" ? PARAGRAPHS_ID : PARAGRAPHS_EN;
 
-  // Build combined timeline string with '\n' markers for paragraph pauses
   const fullStream = useMemo(() => {
     const p1Text = content.p1.map((s) => s.text).join("");
     const p2Text = content.p2.map((s) => s.text).join("");
@@ -235,7 +236,7 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
     return () => window.clearTimeout(timer);
   }, [typedCount, fullStream, isDone]);
 
-  // Handle Escape key for Certificate Lightbox Modal
+  // Handle Escape key & body scroll lock for CertificateModal
   useEffect(() => {
     if (!activeCertificate) return;
     const originalOverflow = document.body.style.overflow;
@@ -259,6 +260,7 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
   const greetingBudget = Math.min(activeCount, greetingLen);
   const p1Budget = Math.max(0, Math.min(activeCount - greetingLen - 1, p1Len));
   const p2Budget = Math.max(0, activeCount - greetingLen - 1 - p1Len - 1);
+  const closeLabel = lang === "id" ? "Tutup" : "Close";
 
   return (
     <section
@@ -269,7 +271,7 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
           completeBySkip();
         }
       }}
-      className={`mx-auto w-full max-w-[540px] px-6 pt-28 pb-20 text-left ${
+      className={`mx-auto w-full max-w-[540px] px-5 pt-24 pb-16 text-left sm:px-6 ${
         !isDone ? "cursor-pointer" : ""
       }`}
     >
@@ -314,10 +316,10 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
                       setActiveCertificate(cert);
                     }}
                     onMouseEnter={playTick}
-                    className="group flex w-full items-center justify-between gap-4 border-b border-black/10 py-3 text-left transition-colors dark:border-white/10"
+                    className="group flex w-full items-center justify-between gap-3 border-b border-black/10 py-3 text-left transition-colors dark:border-white/10"
                   >
-                    <div>
-                      <p className="text-[15px] font-normal text-foreground decoration-dotted underline-offset-4 group-hover:underline">
+                    <div className="min-w-0">
+                      <p className="text-[15px] leading-snug font-normal text-foreground decoration-dotted underline-offset-4 group-hover:underline">
                         {cert.title}
                       </p>
                       <p className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
@@ -325,7 +327,7 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
                       </p>
                     </div>
 
-                    <div className="flex shrink-0 items-center gap-2.5 font-mono text-xs text-neutral-500 tabular-nums dark:text-neutral-400">
+                    <div className="flex shrink-0 items-center gap-2 font-mono text-xs text-neutral-500 tabular-nums dark:text-neutral-400">
                       <span>{t(cert.shortDate, lang)}</span>
                       <span className="inline-flex items-center gap-0.5 text-foreground/80 transition-colors group-hover:text-foreground">
                         <span>{lang === "id" ? "Lihat" : "View"}</span>
@@ -383,100 +385,105 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
         )}
       </div>
 
-      {/* Certificate Lightbox Modal (supports both Landscape & Portrait cleanly) */}
-      <AnimatePresence>
-        {activeCertificate && (
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-label={activeCertificate.title}
-            onClick={(e) => e.stopPropagation()}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
-          >
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              onClick={() => setActiveCertificate(null)}
-              className="fixed inset-0 bg-black/65 backdrop-blur-sm dark:bg-black/80"
-            />
-
-            {/* Modal Container */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.96, y: 8 }}
-              transition={{ type: "spring", bounce: 0, duration: 0.32 }}
-              className="relative z-10 flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-[22px] border border-black/10 bg-surface p-4 shadow-2xl sm:p-6 dark:border-white/10"
-            >
-              {/* Top Bar */}
-              <div className="mb-3 flex items-center justify-between gap-3">
-                <div className="min-w-0">
-                  <h3 className="truncate text-sm font-medium text-foreground sm:text-base">
-                    {activeCertificate.title}
-                  </h3>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    playTick();
-                    setActiveCertificate(null);
-                  }}
-                  onMouseEnter={playTick}
-                  aria-label="Close certificate preview"
-                  className="inline-flex shrink-0 items-center gap-1 rounded-full border border-black/10 bg-canvas px-3 py-1 text-xs text-foreground transition-colors hover:border-black/30 dark:border-white/15 dark:hover:border-white/35"
-                >
-                  <X className="h-3.5 w-3.5" />
-                  <span>{lang === "id" ? "Tutup" : "Close"}</span>
-                </button>
-              </div>
-
-              {/* Certificate Image (Landscape & Portrait safe) */}
-              <div className="flex flex-1 items-center justify-center overflow-hidden rounded-xl border border-black/[0.08] bg-neutral-100 p-2 dark:border-white/[0.08] dark:bg-neutral-900">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={activeCertificate.image}
-                  alt={activeCertificate.title}
-                  className="max-h-[75vh] w-auto mx-auto object-contain rounded-lg"
+      {/* CertificateModal via React Portal (Full-screen backdrop, 3-part flex container) */}
+      {mounted &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <AnimatePresence>
+            {activeCertificate && (
+              <div
+                role="dialog"
+                aria-modal="true"
+                aria-label={activeCertificate.title}
+                onClick={(e) => e.stopPropagation()}
+                className="fixed inset-0 z-[70] flex items-center justify-center p-3 sm:p-6"
+              >
+                {/* Full-Viewport Backdrop */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  onClick={() => setActiveCertificate(null)}
+                  className="fixed inset-0 bg-black/75 backdrop-blur-md dark:bg-black/80"
                 />
-              </div>
 
-              {/* Metadata Footer */}
-              <div className="mt-4 flex flex-col justify-between gap-3 border-t border-black/[0.08] pt-3.5 text-xs sm:flex-row sm:items-center dark:border-white/[0.08]">
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-muted">
-                  <span className="font-medium text-foreground">
-                    {activeCertificate.issuer}
-                  </span>
-                  <span>·</span>
-                  <span>{t(activeCertificate.fullDate, lang)}</span>
-                  <span>·</span>
-                  <span className="font-mono text-[11px] text-foreground">
-                    ID: {activeCertificate.credentialId}
-                  </span>
-                </div>
+                {/* 3-Part Modal Container */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.96, y: 12 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.96, y: 8 }}
+                  transition={{ type: "spring", bounce: 0, duration: 0.34 }}
+                  className="relative z-10 flex max-h-[90dvh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-black/10 bg-surface text-foreground shadow-2xl sm:max-h-[88dvh] sm:rounded-[22px] dark:border-white/10"
+                >
+                  {/* 1. Header (shrink-0) */}
+                  <div className="flex shrink-0 items-center justify-between gap-3 border-b border-black/10 bg-surface px-4 py-3 sm:px-6 sm:py-4 dark:border-white/10">
+                    <h3 className="truncate text-sm font-medium text-foreground sm:text-base">
+                      {activeCertificate.title}
+                    </h3>
 
-                {activeCertificate.verifyUrl && (
-                  <a
-                    href={activeCertificate.verifyUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onMouseEnter={playTick}
-                    className="inline-flex w-fit items-center gap-1 rounded-full border border-black/15 bg-canvas px-3 py-1 font-mono text-[11px] text-foreground transition-colors hover:border-black/35 dark:border-white/15 dark:hover:border-white/35"
-                  >
-                    <span>
-                      {lang === "id" ? "Verifikasi" : "Verify"}
-                    </span>
-                    <ArrowUpRight className="h-3 w-3" />
-                  </a>
-                )}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        playTick();
+                        setActiveCertificate(null);
+                      }}
+                      onMouseEnter={playTick}
+                      aria-label={closeLabel}
+                      title={closeLabel}
+                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-black/10 bg-canvas text-muted transition-all duration-150 hover:border-black/30 hover:text-foreground active:scale-95 dark:border-white/15 dark:hover:border-white/35"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+
+                  {/* 2. Body (flex-1 overflow-y-auto overscroll-contain) */}
+                  <div className="minimal-scroll flex flex-1 items-center justify-center overflow-y-auto overscroll-contain bg-neutral-100/70 p-3 sm:p-5 dark:bg-neutral-900/70">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={activeCertificate.image}
+                      alt={activeCertificate.title}
+                      className="mx-auto max-h-[65dvh] w-auto max-w-full rounded-lg object-contain shadow-md"
+                    />
+                  </div>
+
+                  {/* 3. Footer (shrink-0) */}
+                  <div className="flex shrink-0 flex-col justify-between gap-3 border-t border-black/10 bg-surface px-4 py-3.5 text-xs sm:flex-row sm:items-center sm:px-6 sm:py-4 dark:border-white/10">
+                    <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-muted">
+                      <span className="font-medium text-foreground">
+                        {activeCertificate.issuer}
+                      </span>
+                      <span>·</span>
+                      <span>{t(activeCertificate.fullDate, lang)}</span>
+                      <span>·</span>
+                      <span className="font-mono text-[11px] text-foreground">
+                        ID: {activeCertificate.credentialId}
+                      </span>
+                    </div>
+
+                    {activeCertificate.verifyUrl && (
+                      <a
+                        href={activeCertificate.verifyUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onMouseEnter={playTick}
+                        className="inline-flex h-10 w-full items-center justify-center gap-1 rounded-full border border-black/15 bg-canvas px-4 font-mono text-xs text-foreground transition-colors hover:border-black/35 sm:h-8 sm:w-auto dark:border-white/15 dark:hover:border-white/35"
+                      >
+                        <span>
+                          {lang === "id"
+                            ? "Verifikasi Kredensial"
+                            : "Verify Credential"}
+                        </span>
+                        <ArrowUpRight className="h-3.5 w-3.5" />
+                      </a>
+                    )}
+                  </div>
+                </motion.div>
               </div>
-            </motion.div>
-          </div>
+            )}
+          </AnimatePresence>,
+          document.body
         )}
-      </AnimatePresence>
     </section>
   );
 }

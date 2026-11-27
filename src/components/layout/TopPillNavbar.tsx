@@ -80,10 +80,10 @@ export function TopPillNavbar({
   const backLabel = lang === "id" ? "kembali" : "back";
 
   return (
-    <header className="z-50 mx-auto w-fit pt-6 md:pt-8">
+    <header className="sticky top-4 z-40 mx-auto w-fit pt-4 sm:pt-6 md:pt-8">
       <nav
         aria-label="Primary controls"
-        className="flex h-9 items-center gap-1.5 rounded-full border border-black/[0.12] bg-white/80 px-2 text-[13px] text-neutral-700 backdrop-blur-md transition-colors dark:border-white/[0.14] dark:bg-neutral-950/80 dark:text-neutral-300"
+        className="flex h-9 items-center gap-1.5 rounded-full border border-black/[0.12] bg-white/85 px-2 text-[13px] text-neutral-700 backdrop-blur-md transition-colors dark:border-white/[0.14] dark:bg-neutral-950/85 dark:text-neutral-300"
       >
         {/* Theme Toggle */}
         <button

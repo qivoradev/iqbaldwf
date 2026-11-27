@@ -17,8 +17,9 @@ export function CustomCursor() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
+    const fineQuery = window.matchMedia("(pointer: fine) and (hover: hover)");
     const coarseQuery = window.matchMedia("(pointer: coarse)");
-    if (coarseQuery.matches) return;
+    if (!fineQuery.matches || coarseQuery.matches) return;
 
     let initialized = false;
 
@@ -50,7 +51,7 @@ export function CustomCursor() {
   return (
     <motion.div
       aria-hidden="true"
-      className="pointer-events-none fixed top-0 left-0 z-[100] hidden md:block"
+      className="custom-dot-cursor pointer-events-none fixed top-0 left-0 z-[100] hidden md:block"
       style={{
         x: springX,
         y: springY,

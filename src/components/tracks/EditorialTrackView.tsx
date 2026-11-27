@@ -32,9 +32,9 @@ export function EditorialTrackView({}: EditorialTrackViewProps) {
   return (
     <section
       aria-label="Data Analyst portfolio view"
-      className="mx-auto w-full max-w-[680px] px-6 py-10 text-left md:py-14"
+      className="mx-auto w-full max-w-[680px] px-5 pt-24 pb-16 text-left sm:px-6"
     >
-      {/* Clean Editorial Header: 100% focused on Data Analyst without Coming Soon tab pills */}
+      {/* Clean Editorial Header: 100% focused on Data Analyst */}
       <header className="pb-6">
         <p className="font-mono text-xs text-muted">
           {dataTrack
@@ -57,7 +57,7 @@ export function EditorialTrackView({}: EditorialTrackViewProps) {
         )}
       </header>
 
-      {/* Clean Minimalist Editorial Project List */}
+      {/* Clean Minimalist Editorial Project List (No thumbnail clutter in main list) */}
       <div className="divide-y divide-black/[0.08] border-y border-black/[0.08] dark:divide-white/[0.1] dark:border-white/[0.1]">
         <AnimatePresence mode="popLayout">
           {projects.map((project, index) => (
@@ -88,7 +88,7 @@ export function EditorialTrackView({}: EditorialTrackViewProps) {
               className="group cursor-pointer py-5 transition-colors"
             >
               <div className="flex flex-col justify-between gap-1 sm:flex-row sm:items-baseline">
-                <h2 className="text-[16px] font-normal tracking-[-0.015em] text-foreground decoration-dotted underline-offset-4 group-hover:underline">
+                <h2 className="text-[16px] leading-snug font-normal tracking-[-0.015em] text-foreground decoration-dotted underline-offset-4 group-hover:underline">
                   {project.title}
                 </h2>
 
@@ -148,7 +148,7 @@ export function EditorialTrackView({}: EditorialTrackViewProps) {
         </div>
       )}
 
-      {/* Case Study Detail Modal */}
+      {/* Case Study Detail Modal (Rendered via Portal inside ProjectModal) */}
       <ProjectModal
         project={selectedProject}
         onClose={() => setSelectedProject(null)}

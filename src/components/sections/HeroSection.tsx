@@ -16,14 +16,13 @@ function InlineSparkTrendGlyph() {
   return (
     <span
       aria-hidden="true"
-      className="mx-2.5 inline-flex items-center justify-center align-middle"
+      className="mx-2 sm:mx-2.5 inline-flex items-center justify-center align-middle"
     >
       <svg
         viewBox="0 0 36 36"
         fill="none"
         className="h-[0.78em] w-[0.78em] translate-y-[-0.04em] text-foreground"
       >
-        {/* Subtle minimal chart frame corner */}
         <path
           d="M5.5 7.5V27.5C5.5 28.88 6.62 30 8 30H29.5"
           stroke="currentColor"
@@ -31,7 +30,6 @@ function InlineSparkTrendGlyph() {
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-        {/* Crisp upward trend spark line */}
         <path
           d="M10.5 23L16.5 16.5L21.5 20.5L29.5 11.5"
           stroke="currentColor"
@@ -39,7 +37,6 @@ function InlineSparkTrendGlyph() {
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-        {/* Arrowhead on trend peak */}
         <path
           d="M23.5 11.5H29.5V17.5"
           stroke="currentColor"
@@ -58,7 +55,7 @@ export function HeroSection({ onSelectTrack }: HeroSectionProps) {
   return (
     <section
       aria-label="Introduction and portfolio dock"
-      className="mx-auto flex w-full max-w-[820px] flex-col items-center px-5 text-center"
+      className="mx-auto flex w-full max-w-[820px] flex-col items-center px-4 sm:px-5 text-center"
     >
       {/* Avatar: Clean 96x96 circle using public/avatar.png (or replace with public/avatar.jpg) */}
       <div className="relative h-24 w-24 overflow-hidden rounded-full bg-neutral-200/60 dark:bg-neutral-900">
@@ -77,8 +74,8 @@ export function HeroSection({ onSelectTrack }: HeroSectionProps) {
         {PROFILE.name}
       </p>
 
-      {/* Headline: Strictly font-normal (weight 400), 2 balanced lines with inline trend/spark icon (mx-2.5) */}
-      <h1 className="mt-6 text-[clamp(2rem,4.5vw,3.35rem)] leading-[1.12] font-normal tracking-[-0.03em] text-foreground">
+      {/* Headline: Strictly font-normal (weight 400), mobile-safe clamp(1.75rem,7vw,3.35rem), 2 balanced lines */}
+      <h1 className="mt-6 px-4 text-[clamp(1.75rem,7vw,3.35rem)] leading-[1.12] font-normal tracking-[-0.03em] text-foreground">
         <span className="block">
           Data analyst
           <InlineSparkTrendGlyph />
@@ -90,7 +87,7 @@ export function HeroSection({ onSelectTrack }: HeroSectionProps) {
       </h1>
 
       {/* Signature Squircle Dock */}
-      <div className="mt-11 w-full md:mt-14">
+      <div className="mt-10 w-full md:mt-14">
         <SignatureDock onSelectTrack={onSelectTrack} />
       </div>
     </section>
