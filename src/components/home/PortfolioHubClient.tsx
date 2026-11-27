@@ -18,6 +18,12 @@ const VIEW_TRANSITION = {
   ease: [0.22, 1, 0.36, 1] as const,
 };
 
+function cleanUrlToRoot() {
+  if (typeof window !== "undefined") {
+    window.history.replaceState(null, "", "/");
+  }
+}
+
 export function PortfolioHubClient() {
   const [view, setView] = useState<ActiveView>({ type: "home" });
 
@@ -30,14 +36,16 @@ export function PortfolioHubClient() {
   }, []);
 
   const handleBackToHome = useCallback(() => {
+    cleanUrlToRoot();
     setView({ type: "home" });
   }, []);
 
-  // Allow Escape key to return to Home when in About or Track view
+  // Allow Escape key to return to Home when in About or Track view and clean any URL hash
   useEffect(() => {
     if (view.type === "home") return;
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && !document.querySelector('[role="dialog"]')) {
+        cleanUrlToRoot();
         setView({ type: "home" });
       }
     };

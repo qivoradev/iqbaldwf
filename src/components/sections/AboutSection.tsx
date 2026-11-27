@@ -48,7 +48,7 @@ function GitHubMiniIcon() {
 }
 
 const PARAGRAPHS_ID: { greeting: string; p1: TextSegment[]; p2: TextSegment[] } = {
-  greeting: "Halo 👋 ʕ•ᴥ•ʔ",
+  greeting: "Hai, terima kasih sudah mampir.",
   p1: [
     { text: "Saya Iqbal Dwi Fathonah, fresh graduate S1 Teknologi Informasi " },
     { text: "Universitas Muhammadiyah Yogyakarta (2026)", underline: true },
@@ -70,7 +70,7 @@ const PARAGRAPHS_ID: { greeting: string; p1: TextSegment[]; p2: TextSegment[] } 
 };
 
 const PARAGRAPHS_EN: { greeting: string; p1: TextSegment[]; p2: TextSegment[] } = {
-  greeting: "Hi there 👋 ʕ•ᴥ•ʔ",
+  greeting: "Hey, glad you stopped by.",
   p1: [
     {
       text: "I'm Iqbal Dwi Fathonah, a Bachelor of Information Technology fresh graduate from ",
@@ -155,14 +155,19 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
   const [typedCount, setTypedCount] = useState<number>(0);
   const [isDone, setIsDone] = useState<boolean>(false);
 
-  const { playKeystroke, playTick } = useUiSound();
+  const { playKeystroke, playTypewriterBell, playTick } = useUiSound();
   const playKeystrokeRef = useRef(playKeystroke);
+  const playBellRef = useRef(playTypewriterBell);
+  const bellPlayedRef = useRef<boolean>(false);
 
   useEffect(() => {
     playKeystrokeRef.current = playKeystroke;
-  }, [playKeystroke]);
+    playBellRef.current = playTypewriterBell;
+  }, [playKeystroke, playTypewriterBell]);
 
-  const completeImmediately = useCallback(() => {
+  const completeBySkip = useCallback(() => {
+    // Mark bell as already handled so skipping never rings the typewriter bell
+    bellPlayedRef.current = true;
     setTypedCount(fullStream.length);
     setIsDone(true);
   }, [fullStream.length]);
@@ -176,23 +181,31 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
     ).matches;
 
     if (typedCount >= fullStream.length) {
-      const doneTimer = window.setTimeout(() => setIsDone(true), 10);
+      const doneTimer = window.setTimeout(() => {
+        if (!bellPlayedRef.current) {
+          bellPlayedRef.current = true;
+          playBellRef.current();
+        }
+        setIsDone(true);
+      }, 10);
       return () => window.clearTimeout(doneTimer);
     }
 
     const currentChar = fullStream[typedCount] ?? "";
-    let delay = 18 + Math.floor(Math.random() * 11); // 18-28ms organic cadence
+    // Rhythmic vintage typewriter cadence: 24–38ms per character
+    let delay = 24 + Math.floor(Math.random() * 15);
 
     if (reducedMotion) {
       delay = 10;
     } else if (currentChar === "\n") {
       delay = 220; // Natural paragraph transition pause
     } else if (currentChar === "." || currentChar === ",") {
-      delay = 120; // Natural punctuation pause
+      delay = 140; // Natural punctuation pause (140ms)
     }
 
     const timer = window.setTimeout(() => {
       if (reducedMotion) {
+        bellPlayedRef.current = true;
         setTypedCount(fullStream.length);
         setIsDone(true);
         return;
@@ -205,6 +218,10 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
       const nextCount = typedCount + 1;
       setTypedCount(nextCount);
       if (nextCount >= fullStream.length) {
+        if (!bellPlayedRef.current) {
+          bellPlayedRef.current = true;
+          playBellRef.current();
+        }
         setIsDone(true);
       }
     }, delay);
@@ -224,19 +241,19 @@ export function AboutSection({ onSelectTrack }: AboutSectionProps) {
       onClick={() => {
         if (!isDone) {
           playTick();
-          completeImmediately();
+          completeBySkip();
         }
       }}
       className={`mx-auto w-full max-w-[540px] px-6 pt-28 pb-20 text-left ${
         !isDone ? "cursor-pointer" : ""
       }`}
     >
-      <div className="space-y-6 text-[16px] leading-[1.72] font-normal tracking-[-0.01em] text-neutral-800 md:text-[17px] dark:text-neutral-200">
-        {/* Top Greeting Line */}
-        <p className="text-foreground">
-          {content.greeting.slice(0, greetingBudget)}
-        </p>
+      {/* Top Greeting Line: warm, muted editorial tone */}
+      <p className="mb-6 text-[15px] font-normal text-neutral-500 dark:text-neutral-400">
+        {content.greeting.slice(0, greetingBudget)}
+      </p>
 
+      <div className="space-y-6 text-[16px] leading-[1.72] font-normal tracking-[-0.01em] text-neutral-800 md:text-[17px] dark:text-neutral-200">
         {/* Paragraph 1 */}
         {p1Budget > 0 && (
           <p>{renderSegmentsUpTo(content.p1, p1Budget, onSelectTrack)}</p>

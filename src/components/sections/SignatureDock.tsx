@@ -68,7 +68,7 @@ function TerminalSquircleSvg() {
   );
 }
 
-/** 2. Data Analyst: Full white wireframe globe / global analytics grid on #16A34A */
+/** 2. Data Analyst: Full white proportional bar chart icon on #16A34A */
 function DataGlobeSquircleSvg() {
   return (
     <svg
@@ -77,26 +77,32 @@ function DataGlobeSquircleSvg() {
       aria-hidden="true"
       className="h-7.5 w-7.5 text-white"
     >
-      <circle
-        cx="16"
-        cy="16"
-        r="12"
-        stroke="currentColor"
-        strokeWidth="2.1"
+      {/* Left bar */}
+      <rect
+        x="5.5"
+        y="16.5"
+        width="5"
+        height="10.5"
+        rx="1.6"
+        fill="currentColor"
       />
-      <ellipse
-        cx="16"
-        cy="16"
-        rx="6"
-        ry="12"
-        stroke="currentColor"
-        strokeWidth="2"
+      {/* Middle bar */}
+      <rect
+        x="13.5"
+        y="11"
+        width="5"
+        height="16"
+        rx="1.6"
+        fill="currentColor"
       />
-      <path
-        d="M16 4V28M4.5 12.5H27.5M4.5 19.5H27.5"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
+      {/* Right tallest bar */}
+      <rect
+        x="21.5"
+        y="5.5"
+        width="5"
+        height="21.5"
+        rx="1.6"
+        fill="currentColor"
       />
     </svg>
   );
