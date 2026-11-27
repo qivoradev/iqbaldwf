@@ -461,7 +461,7 @@ export function SignatureDock({ onSelectTrack }: SignatureDockProps) {
           className="my-3 h-[1px] w-full bg-black/10 dark:bg-white/20"
         />
 
-        <div className="flex items-center justify-center gap-3 min-[375px]:gap-3.5">
+        <div className="grid grid-cols-4 gap-3 min-[375px]:gap-x-3.5 min-[375px]:gap-y-2.5">
           {socialItems.map((item) => (
             <a
               key={item.id}
