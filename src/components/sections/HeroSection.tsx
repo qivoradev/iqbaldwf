@@ -100,7 +100,7 @@ export function HeroSection({ onSelectTrack }: HeroSectionProps) {
           <InlineSparkTrendGlyph isTech={isTech} />
           &amp;
         </span>
-        <span className="block">web developer</span>
+        <span className="block">BI reporting</span>
       </h1>
 
       {/* Signature Squircle Dock */}
