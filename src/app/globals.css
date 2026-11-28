@@ -200,8 +200,67 @@ html[data-theme="tech"] .minimal-scroll::-webkit-scrollbar-thumb {
   }
 }
 
+/* 3D Coin Flip Avatar Utilities (with prefers-reduced-motion fallback) */
+.avatar-flip-scene {
+  perspective: 800px;
+}
+
+.avatar-flip-inner {
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  transition: transform 550ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform;
+}
+
+.avatar-flip-inner[data-flipped="true"] {
+  transform: rotateY(180deg);
+}
+
+.avatar-flip-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.avatar-flip-back {
+  transform: rotateY(180deg);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  .avatar-flip-inner,
+  .avatar-flip-inner[data-flipped="true"] {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .avatar-flip-back {
+    transform: none !important;
+  }
+
+  .avatar-flip-face {
+    backface-visibility: visible;
+    -webkit-backface-visibility: visible;
+    transition: opacity 150ms ease;
+  }
+
+  .avatar-flip-inner[data-flipped="false"] .avatar-flip-front {
+    opacity: 1;
+  }
+
+  .avatar-flip-inner[data-flipped="false"] .avatar-flip-back {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .avatar-flip-inner[data-flipped="true"] .avatar-flip-front {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .avatar-flip-inner[data-flipped="true"] .avatar-flip-back {
+    opacity: 1;
   }
 }

@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import { FilterTrackSlug, PROFILE } from "@/data/portfolio";
-import { useTheme } from "@/components/providers/AppProviders";
+import { useLanguage, useTheme } from "@/components/providers/AppProviders";
+import { useUiSound } from "@/hooks/useUiSound";
 import { SignatureDock } from "./SignatureDock";
 
 interface HeroSectionProps {
@@ -53,30 +55,75 @@ function InlineSparkTrendGlyph({ isTech }: { isTech: boolean }) {
 
 export function HeroSection({ onSelectTrack }: HeroSectionProps) {
   const { resolvedTheme, mounted } = useTheme();
+  const { lang } = useLanguage();
+  const { playSwitch } = useUiSound();
+  const [isFlipped, setIsFlipped] = useState(false);
+
   const isTech = mounted && resolvedTheme === "tech";
+  const flipLabel =
+    lang === "id" ? "Balik foto profil" : "Flip profile photo";
+
+  const handleFlipAvatar = () => {
+    const nextFlipped = !isFlipped;
+    setIsFlipped(nextFlipped);
+    playSwitch(nextFlipped);
+  };
 
   return (
     <section
       aria-label="Introduction and portfolio dock"
       className="mx-auto flex w-full max-w-[820px] flex-col items-center px-4 sm:px-5 text-center"
     >
-      {/* Avatar: Circle in Light/Dark, Sharp Technical Square Frame in Tech mode */}
-      <div
-        className={`relative h-24 w-24 overflow-hidden transition-all duration-200 ${
-          isTech
-            ? "rounded-none border border-[#FFFFFF] bg-[#04472B] shadow-[4px_4px_0px_#FFFFFF]"
-            : "rounded-full bg-neutral-200/60 dark:bg-neutral-900"
-        }`}
+      {/* 3D Coin Flip Avatar: Front = Portrait, Back = IDF Monogram */}
+      <button
+        type="button"
+        onClick={handleFlipAvatar}
+        aria-pressed={isFlipped}
+        aria-label={flipLabel}
+        title={flipLabel}
+        className="avatar-flip-scene group relative h-24 w-24 cursor-pointer bg-transparent p-0 transition-transform duration-200 hover:scale-[1.03] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground"
       >
-        <Image
-          src="/avatar.png"
-          alt={PROFILE.name}
-          width={192}
-          height={192}
-          priority
-          className="h-full w-full bg-transparent object-cover object-top scale-105 translate-y-1 grayscale contrast-[1.05]"
-        />
-      </div>
+        <div
+          data-flipped={isFlipped ? "true" : "false"}
+          className="avatar-flip-inner relative h-full w-full"
+        >
+          {/* Front Face: Profile Photo */}
+          <div
+            className={`avatar-flip-face avatar-flip-front absolute inset-0 overflow-hidden transition-shadow duration-200 ${
+              isTech
+                ? `rounded-none border border-[#FFFFFF] bg-[#04472B] ${
+                    isFlipped ? "shadow-none" : "shadow-[4px_4px_0px_#FFFFFF]"
+                  }`
+                : "rounded-full bg-neutral-200/60 dark:bg-neutral-900"
+            }`}
+          >
+            <Image
+              src="/avatar.png"
+              alt={PROFILE.name}
+              width={192}
+              height={192}
+              priority
+              className="h-full w-full bg-transparent object-cover object-top scale-105 translate-y-1 grayscale contrast-[1.05]"
+            />
+          </div>
+
+          {/* Back Face: IDF Monogram */}
+          <div
+            aria-hidden={!isFlipped}
+            className={`avatar-flip-face avatar-flip-back absolute inset-0 flex items-center justify-center overflow-hidden select-none transition-shadow duration-200 ${
+              isTech
+                ? `rounded-none border border-[#FFFFFF] bg-[#FFFFFF] font-mono text-xl font-bold tracking-[0.14em] text-[#04472B] ${
+                    isFlipped
+                      ? "shadow-[3px_3px_0px_#04472B,4px_4px_0px_#FFFFFF]"
+                      : "shadow-none"
+                  }`
+                : "rounded-full border border-black/15 bg-[#111111] text-xl font-semibold tracking-[0.14em] text-[#FFFFFF] dark:border-white/[0.16] dark:bg-[#171717] dark:text-[#F5F5F5]"
+            }`}
+          >
+            <span className="translate-x-[0.07em]">IDF</span>
+          </div>
+        </div>
+      </button>
 
       {/* Name: Tight spacing directly below avatar */}
       <p
