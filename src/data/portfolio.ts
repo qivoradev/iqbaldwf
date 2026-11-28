@@ -143,15 +143,15 @@ export const TRACKS: Track[] = [
       en: "Turning transactional and operational data into clear, practical reports.",
     },
     description: {
-      id: "Pembersihan data dengan SQL (MySQL), pemodelan KPI dan PivotTable di Microsoft Excel, serta pembuatan dashboard interaktif di Google Looker Studio.",
-      en: "Data cleaning with SQL (MySQL), KPI and PivotTable modeling in Microsoft Excel, and interactive dashboards in Google Looker Studio.",
+      id: "Mengubah data mentah menjadi wawasan bisnis melalui pembersihan data, analisis tren, dan perancangan dashboard KPI interaktif untuk mendukung pengambilan keputusan.",
+      en: "Turning raw data into actionable business insights through data cleaning, trend analysis, and interactive KPI dashboards to support decision-making.",
     },
     accentHex: "#16A34A",
     coreStack: [
       "SQL (MySQL)",
       "Microsoft Excel",
       "Google Looker Studio",
-      "PivotTable",
+      "Data Cleaning",
       "Data Modeling",
     ],
   },
