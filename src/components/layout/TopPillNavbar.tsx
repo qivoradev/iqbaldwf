@@ -101,7 +101,8 @@ export function TopPillNavbar({
 }: TopPillNavbarProps) {
   const { theme, resolvedTheme, setTheme, mounted } = useTheme();
   const { lang, toggleLanguage } = useLanguage();
-  const { soundEnabled, setSoundEnabled, playSwitch, playTick } = useUiSound();
+  const { soundEnabled, setSoundEnabled, playLightSwitch, playTick } =
+    useUiSound();
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -149,16 +150,21 @@ export function TopPillNavbar({
   };
 
   const handleSelectTheme = (nextTheme: ThemeMode) => {
+    if (nextTheme === theme) return;
     setTheme(nextTheme);
-    playSwitch(nextTheme);
+    const variant =
+      nextTheme === "light" || nextTheme === "auto" ? "on" : "off";
+    playLightSwitch(variant);
   };
 
   const handleToggleSoundEffects = () => {
     const nextEnabled = !soundEnabled;
-    setSoundEnabled(nextEnabled);
     if (nextEnabled) {
-      // Tactile confirmation click when re-enabling sound effects
-      playSwitch(resolvedTheme !== "light", true);
+      setSoundEnabled(true);
+      playLightSwitch("on", true);
+    } else {
+      playLightSwitch("off", true);
+      setSoundEnabled(false);
     }
   };
 

@@ -16,6 +16,7 @@ function getAudioContextClass(): AudioContextConstructor | null {
 let sharedAudioCtx: AudioContext | null = null;
 let cachedStrikeNoiseBuffer: AudioBuffer | null = null;
 let cachedClickNoiseBuffer: AudioBuffer | null = null;
+let cachedLightSwitchNoiseBuffer: AudioBuffer | null = null;
 
 function ensureAudioContext(): AudioContext | null {
   const AudioCtx = getAudioContextClass();
@@ -69,6 +70,25 @@ function getClickNoiseBuffer(ctx: AudioContext): AudioBuffer {
     data[i] = (Math.random() * 2 - 1) * envelope;
   }
   cachedClickNoiseBuffer = buffer;
+  return buffer;
+}
+
+function getLightSwitchNoiseBuffer(ctx: AudioContext): AudioBuffer {
+  if (
+    cachedLightSwitchNoiseBuffer &&
+    cachedLightSwitchNoiseBuffer.sampleRate === ctx.sampleRate
+  ) {
+    return cachedLightSwitchNoiseBuffer;
+  }
+  const frameCount = Math.max(1, Math.ceil(ctx.sampleRate * 0.026));
+  const buffer = ctx.createBuffer(1, frameCount, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < frameCount; i++) {
+    const progress = i / frameCount;
+    const envelope = Math.pow(1 - progress, 1.6);
+    data[i] = (Math.random() * 2 - 1) * envelope;
+  }
+  cachedLightSwitchNoiseBuffer = buffer;
   return buffer;
 }
 
@@ -152,6 +172,94 @@ export function useUiSound() {
 
         noiseSource.start(snapTime);
         noiseSource.stop(snapTime + 0.012);
+      } catch {
+        // Ignore autoplay restriction errors gracefully
+      }
+    },
+    [soundEnabled]
+  );
+
+  /**
+   * Mechanical Rocker Light Switch for Theme Segmented Control & Sound Effects Toggle:
+   * - Layer 1 (t = 0ms): Pre-snap lever friction (~8ms bandpass noise around 2800Hz, Q = 2.2)
+   * - Layer 2 (t = +16ms): Main plastic snap (~22ms bandpass noise: 2200Hz for 'on', 1550Hz for 'off')
+   *   + Housing cavity thud (~35ms triangle pitch drop: 270Hz -> 95Hz for 'on', 210Hz -> 72Hz for 'off')
+   */
+  const playLightSwitch = useCallback(
+    (variant: "on" | "off" = "on", forcePlay = false) => {
+      if (!soundEnabled && !forcePlay) return;
+      const ctx = ensureAudioContext();
+      if (!ctx) return;
+
+      try {
+        if (ctx.state === "suspended") {
+          void ctx.resume().catch(() => {});
+        }
+
+        const now = ctx.currentTime;
+        const noiseBuffer = getLightSwitchNoiseBuffer(ctx);
+        const isOn = variant === "on";
+
+        // Layer 1: Pre-snap lever friction at t = 0ms (~8ms, bandpass 2800Hz, Q = 2.2)
+        const preNoise = ctx.createBufferSource();
+        preNoise.buffer = noiseBuffer;
+
+        const preFilter = ctx.createBiquadFilter();
+        preFilter.type = "bandpass";
+        preFilter.frequency.setValueAtTime(2800, now);
+        preFilter.Q.setValueAtTime(2.2, now);
+
+        const preGain = ctx.createGain();
+        preGain.gain.setValueAtTime(0.18, now);
+        preGain.gain.exponentialRampToValueAtTime(0.001, now + 0.008);
+
+        preNoise.connect(preFilter);
+        preFilter.connect(preGain);
+        preGain.connect(ctx.destination);
+
+        preNoise.start(now);
+        preNoise.stop(now + 0.01);
+
+        // Layer 2a: Main plastic clack snap at t = +16ms (~22ms, bandpass 2200Hz 'on' / 1550Hz 'off')
+        const clackTime = now + 0.016;
+        const snapNoise = ctx.createBufferSource();
+        snapNoise.buffer = noiseBuffer;
+
+        const snapFilter = ctx.createBiquadFilter();
+        snapFilter.type = "bandpass";
+        snapFilter.frequency.setValueAtTime(isOn ? 2200 : 1550, clackTime);
+        snapFilter.Q.setValueAtTime(1.8, clackTime);
+
+        const snapGain = ctx.createGain();
+        snapGain.gain.setValueAtTime(isOn ? 0.34 : 0.32, clackTime);
+        snapGain.gain.exponentialRampToValueAtTime(0.001, clackTime + 0.022);
+
+        snapNoise.connect(snapFilter);
+        snapFilter.connect(snapGain);
+        snapGain.connect(ctx.destination);
+
+        snapNoise.start(clackTime);
+        snapNoise.stop(clackTime + 0.024);
+
+        // Layer 2b: Switch housing cavity thud at t = +16ms (~35ms pitch drop)
+        const thudOsc = ctx.createOscillator();
+        const thudGain = ctx.createGain();
+
+        thudOsc.type = "triangle";
+        thudOsc.frequency.setValueAtTime(isOn ? 270 : 210, clackTime);
+        thudOsc.frequency.exponentialRampToValueAtTime(
+          isOn ? 95 : 72,
+          clackTime + 0.035
+        );
+
+        thudGain.gain.setValueAtTime(isOn ? 0.28 : 0.3, clackTime);
+        thudGain.gain.exponentialRampToValueAtTime(0.001, clackTime + 0.035);
+
+        thudOsc.connect(thudGain);
+        thudGain.connect(ctx.destination);
+
+        thudOsc.start(clackTime);
+        thudOsc.stop(clackTime + 0.037);
       } catch {
         // Ignore autoplay restriction errors gracefully
       }
@@ -373,6 +481,7 @@ export function useUiSound() {
     toggleMute,
     setMuted,
     playSwitch,
+    playLightSwitch,
     playTick,
     playKeystroke,
     playTypewriterBell,
